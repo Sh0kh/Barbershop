@@ -39,7 +39,7 @@ export default function RecordInput(){
         
         <div className="mb-5">
             <label className="block text-sm font-medium mb-2 text-gray-700">
-                Comment <span className="text-red-500">*</span>
+                Комментарий <span className="text-red-500">*</span>
             </label>
             <input
                 type="email"

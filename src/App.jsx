@@ -23,21 +23,14 @@ function App() {
               </ProtectedRoute>
             }
           >
-
           </Route>
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
-            <Route path="/service" element={<Service/>} />
-            <Route path="/date" element={<Date/>} />
-            <Route path="/record" element={<Record/>} />
-            <Route path="/barberinfo" element={<Barber/>} />
-            <Route path="/confrim" element={<Confrim/>} />
-
-
-
-
-
-
+            <Route path="/service" element={<Service />} />
+            <Route path="/date" element={<Date />} />
+            <Route path="/record" element={<Record />} />
+            <Route path="/barberinfo" element={<Barber />} />
+            <Route path="/confrim" element={<Confrim />} />
           </Route>
         </Route>
       </Routes>

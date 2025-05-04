@@ -6,7 +6,6 @@ export default function Record(){
         <div className="mx-auto max-w-[600px]  min-h-screen">
             <RecordHero/>
             <RecordInput/>
-         
         </div>
     )
 }

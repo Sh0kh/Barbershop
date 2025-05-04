@@ -76,7 +76,7 @@ export default function ServiceHero() {
 
   return (
     <div className="max-w-[100%] min-h-screen pb-24 mx-auto p-4 bg-white">
-    <LogoUse/>
+      <LogoUse />
 
       <h2 className="text-xl font-bold mb-4">Выбрать услуги</h2>
 
@@ -90,7 +90,7 @@ export default function ServiceHero() {
           placeholder="Найти"
         />
       </div>
-<ServiceOne/>
+      <ServiceOne />
     </div>
   );
 }
