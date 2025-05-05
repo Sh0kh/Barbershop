@@ -54,7 +54,7 @@ export default function ConfirmSer() {
                         />
                     </svg>
                 </div>
-                <span>Yozuvni ko'chirish</span>
+                <span>Ko'chirish</span>
             </div>
 
             <div className="ff_con">
@@ -71,7 +71,7 @@ export default function ConfirmSer() {
                         />
                     </svg>
                 </div>
-                <span>Yozuvni bekor qilish</span>
+                <span>Bekor qilish</span>
             </div>
         </div>
     );
