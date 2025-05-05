@@ -10,8 +10,8 @@ export default function BarbersOne() {
   const barbers = [
     {
       id: 1,
-      name: 'Фархед (Farxad)',
-      position: 'Барбер',
+      name: 'Farxed (Farxad)',
+      position: 'Barber',
       rating: 4.8,
       reviews: 48,
       image: 'https://randomuser.me/api/portraits/men/32.jpg',
@@ -19,8 +19,8 @@ export default function BarbersOne() {
     },
     {
       id: 2,
-      name: 'Анастасия (Anastaclia)',
-      position: 'Барбер',
+      name: 'Anastasiya (Anastaclia)',
+      position: 'Barber',
       rating: 4.5,
       reviews: 18,
       image: 'https://randomuser.me/api/portraits/women/44.jpg',
@@ -45,7 +45,7 @@ export default function BarbersOne() {
             <div className="bg-gray-200 p-2 rounded-full mr-3 ">
               <Users size={20} className="text-gray-600" />
             </div>
-            <span className="text-gray-800 font-semibold">Выбрать специалиста</span>
+            <span className="text-gray-800 font-semibold">Mutaxassisni tanlash</span>
           </div>
         </div>
 
@@ -55,7 +55,7 @@ export default function BarbersOne() {
             onClick={() => handleSelectSpecialist(null)}
           >
             <div className="flex justify-between items-center">
-              <div className="font-medium text-lg">Любой специалист</div>
+              <div className="font-medium text-lg">Ixtiyoriy mutaxassis</div>
               <div
                 className={`h-6 w-6 rounded-full flex items-center justify-center ${!selectedSpecialist ? 'bg-black' : 'border border-gray-300'}`}
               >
@@ -95,7 +95,7 @@ export default function BarbersOne() {
                       <Star className="fill-yellow-400 text-yellow-400 mr-[10px]" size={16} />
 
                       <span className="rating_span ml-1 font-medium">{barber.rating.toFixed(1)}</span>
-                      <span className="rating_span text-gray-500 ml-2 text-sm">{barber.reviews} отзывов</span>
+                      <span className="rating_span text-gray-500 ml-2 text-sm">{barber.reviews} ta sharh</span>
                     </div>
                   </div>
                 </div>
@@ -114,7 +114,7 @@ export default function BarbersOne() {
               </div>
 
               <div className="mt-4">
-                <p className="text-gray-500 text-sm mb-3">Ближайшее время для записи завтра:</p>
+                <p className="text-gray-500 text-sm mb-3">Ertangi kungi eng yaqin vaqt uchun yozilish:</p>
                 <div className="flex flex-wrap gap-2">
                   {barber.availableTimes.map((time, index) => (
                     <button
@@ -143,7 +143,7 @@ export default function BarbersOne() {
             to="/service"
             className="w-full block bg-black text-white py-3 rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors text-center"
           >
-            Выбрать услугу
+            Xizmatni tanlash
           </NavLink>
         </div>
       )}

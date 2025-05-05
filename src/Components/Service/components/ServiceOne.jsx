@@ -14,27 +14,27 @@ export default function ServiceOne() {
 
   const services = [
     {
-      category: "Стрижка",
+      category: "Soch oldirish",
       items: [
         {
-          title: "Классическая стрижка + укладка",
-          duration: "1 ч",
+          title: "Klassik soch oldirish + shakllantirish",
+          duration: "1 soat",
           price: "180 000 so'm",
-          description: "Любая стрижка по вашему желанию, выполненная на высшем уровне.",
+          description: "Istagan soqqangizni professional ravishda bajarish.",
           id: "classic-cut",
         },
         {
-          title: "Стрижка под машинку",
-          duration: "30 мин",
+          title: "Mashina bilan soch oldirish",
+          duration: "30 daqiqa",
           price: "120 000 so'm",
-          description: "Стрижка под машинку с выравниванием.",
+          description: "Mashina bilan teng qilish hamda soch oldirish.",
           id: "machine-cut",
         },
         {
-          title: "Премиальная услуга, специально для любителей удлиненных ст... ещё",
-          duration: "1 ч",
+          title: "Maxsus uzun soch oldirish",
+          duration: "1 soat",
           price: "180 000 so'm",
-          description: "Премиальная стрижка с удлинением.",
+          description: "Maxsus uzun soch oldirish xizmati.",
           id: "premium-cut",
         },
       ],
@@ -95,11 +95,11 @@ export default function ServiceOne() {
       {selectedServices.length > 0 && (
         <div className="mt-6 fixed bottom-0 bg-white left-0 right-0 max-w-xl mx-auto p-4 z-50 border-t border-gray-200">
           <div className="text-gray-800 mb-4 flex items-center justify-between">
-            <p className="text-base">{selectedServices.length} услуга{selectedServices.length > 1 ? 'и' : ''} {totalDuration}</p>
+            <p className="text-base">{selectedServices.length} xizmat {totalDuration}</p>
             <p className="text-lg font-semibold">{totalPrice.toLocaleString()} so'm</p>
           </div>
           <NavLink to="/date" className="block w-full text-center bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none">
-            Выбрать дату и время
+            Sana va vaqtni tanlash
           </NavLink>
         </div>
       )}

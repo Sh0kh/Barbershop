@@ -9,8 +9,8 @@ export default function DateHero() {
   const [selectedTime, setSelectedTime] = useState(null);
 
   const times = {
-    'День': ['10:00', '13:30', '15:00', '16:30'],
-    'Вечер': ['18:00', '18:30', '19:00']
+    'Kunduzgi': ['10:00', '13:30', '15:00', '16:30'],
+    'Tungi': ['18:00', '18:30', '19:00']
   };
 
   const handlePrevMonth = () => {
@@ -22,31 +22,31 @@ export default function DateHero() {
   };
 
   const generateCalendarDays = () => {
-    const year = 2025; 
+    const year = 2025;
     const daysInMonth = new Date(year, currentMonthIndex + 1, 0).getDate();
     const firstDayOfWeek = new Date(year, currentMonthIndex, 1).getDay();
-    
+
 
     const firstDayIndex = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
-    
+
     let days = [];
-    
- 
+
+
     const prevMonthDays = new Date(year, currentMonthIndex, 0).getDate();
     for (let i = firstDayIndex - 1; i >= 0; i--) {
       days.push({ day: prevMonthDays - i, currentMonth: false });
     }
-    
+
 
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({ day: i, currentMonth: true });
     }
-  
+
     const remainingDays = 42 - days.length;
     for (let i = 1; i <= remainingDays; i++) {
       days.push({ day: i, currentMonth: false });
     }
-    
+
     return days;
   };
 
@@ -54,12 +54,12 @@ export default function DateHero() {
 
   return (
     <div className="max-w-[100%] mx-auto p-4 bg-white  pb-24 min-h-screen">
- 
-     <LogoUse/>
+
+      <LogoUse />
 
 
       <div className="flex items-center justify-between mb-6">
-        <button 
+        <button
           onClick={handlePrevMonth}
           className="p-2 rounded-full hover:bg-gray-100"
         >
@@ -73,10 +73,10 @@ export default function DateHero() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        
+
         <h2 className="font-medium text-lg">{months[currentMonthIndex]}</h2>
-        
-        <button 
+
+        <button
           onClick={handleNextMonth}
           className="p-2 rounded-full hover:bg-gray-100"
         >
@@ -100,10 +100,10 @@ export default function DateHero() {
             <div key={day} className="text-center text-gray-500 font-medium text-sm">{day}</div>
           ))}
         </div>
-        
+
         {/* Calendar days */}
         <div className="grid grid-cols-7 gap-1">
-          {calendarDays.map(({day, currentMonth}, index) => (
+          {calendarDays.map(({ day, currentMonth }, index) => (
             <div
               key={index}
               className={`relative text-center p-2 text-sm rounded-full
@@ -146,7 +146,7 @@ export default function DateHero() {
       {selectedTime && (
         <div className="mt-6 fixed bottom-0 bg-white left-0 right-0 max-w-xl mx-auto p-4 z-50 border-t border-gray-200">
           <NavLink to="/record" className="block w-full text-center bg-black  text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none">
-          Готово
+            Tayyor
           </NavLink>
         </div>
       )}
