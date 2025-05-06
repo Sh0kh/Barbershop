@@ -50,21 +50,7 @@ export default function BarbersOne() {
         </div>
 
         <div className="mt-4 space-y-4 transition-all">
-          <div
-            className={`p-4 rounded-lg shadow-sm cursor-pointer transition-all bg-white border border-gray-200 hover:border-gray-300 ${!selectedSpecialist ? 'border-black' : ''}`}
-            onClick={() => handleSelectSpecialist(null)}
-          >
-            <div className="flex justify-between items-center">
-              <div className="font-medium text-lg">Ixtiyoriy mutaxassis</div>
-              <div
-                className={`h-6 w-6 rounded-full flex items-center justify-center ${!selectedSpecialist ? 'bg-black' : 'border border-gray-300'}`}
-              >
-                {!selectedSpecialist && (
-                  <div className="h-2 w-2 rounded-full bg-white"></div>
-                )}
-              </div>
-            </div>
-          </div>
+         
 
           {barbers.map((barber) => (
             <div
