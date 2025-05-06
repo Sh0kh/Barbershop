@@ -4,7 +4,7 @@ import './index.css'
 import '././Components/Style/Media.css'
 import App from './App.jsx'
 import { ThemeProvider } from '@material-tailwind/react'
-import './i18n.js'
+import "./i18n.js"
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
