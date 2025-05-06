@@ -6,41 +6,36 @@ import BarbersOne from './BarbersOne';
 export default function HomeHero() {
   const { t, i18n } = useTranslation();
   
-  const ChangeLanguage = (lng) => {
+  const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
-
-  const languages = [
-    { code: 'uz', name: 'O\'zbek' },
-    { code: 'ru', name: 'Русский' }
-  ];
 
   return (
     <div className="bg-gray-50 text-black w-full mx-auto max-w-xl relative">
   
       <div className="absolute top-4 right-4 z-30">
-        <div className="relative group">
+        <div className="flex items-center bg-black bg-opacity-70 text-white rounded-full shadow-lg overflow-hidden">
           <button 
-            className="flex items-center bg-black bg-opacity-70 text-white px-4 py-2 rounded-full shadow-lg hover:bg-opacity-90 transition-all"
+            onClick={() => changeLanguage('uz')}
+            className={`px-4 py-2 transition-all flex items-center ${i18n.language === 'uz' ? 'bg-white text-black' : 'hover:bg-opacity-80'}`}
           >
             <Globe size={18} className="mr-2" />
-            <span>{i18n.language === 'uz' ? 'O\'zbek' : 'Русский'}</span>
+            <span>O'zbek</span>
           </button>
           
-          <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => ChangeLanguage(lang.code)}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-              >
-                {lang.name}
-              </button>
-            ))}
-          </div>
+          <div className="h-6 w-px bg-gray-400"></div>
+          
+          <button 
+            onClick={() => changeLanguage('ru')}
+            className={`px-4 py-2 transition-all flex items-center ${i18n.language === 'ru' ? 'bg-white text-black' : 'hover:bg-opacity-80'}`}
+          >
+            <Globe size={18} className="mr-2" />
+            <span>Русский</span>
+          </button>
         </div>
       </div>
 
+      {/* Qolgan kontent o'zgarishsiz qoladi */}
       <div className="relative w-full h-70 bg-black">
         <img 
           src="https://assets.alteg.io/booking_form_appearance_header/origin/2/2a/2ac2bcb7a129f97_20241028031212.png" 

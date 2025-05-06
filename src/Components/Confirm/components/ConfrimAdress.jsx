@@ -1,10 +1,15 @@
 import logo from '../../UI/Icons/photo_2025-05-02_21-23-30.jpg';
 import Telegram from '../../UI/Icons/Telegram';
+import { useTranslation } from 'react-i18next';
 
 export default function ConfirmAdress() {
+  const { t, i18n } = useTranslation();
+
   return (
     <div className="max-w-[100%] mx-auto">
-      <h2 className="text-sm font-bold text-gray-800 mb-2 mt-[20px]">Aloqa</h2>
+      <h2 className="text-sm font-bold text-gray-800 mb-2 mt-[20px]">{t('contact')}
+      
+      </h2>
 
       <div className="flex items-center mb-4">
         <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
@@ -35,7 +40,7 @@ export default function ConfirmAdress() {
             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
           />
         </svg>
-        <p className="text-sm text-gray-700">Guliston shahar, O’zbekistonshox koʻchas</p>
+        <p className="text-sm text-gray-700">{t('location')}</p>
       </div>
 
       <div className="relative mb-4">

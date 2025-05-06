@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { NavLink } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 export default function RecordInput() {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('+998');
     const [email, setEmail] = useState('');
 
-    return (
+    const { t, i18n } = useTranslation();
+
+    return ( 
         <div className="record_input mb-24 mt-[20px] bg-white p-4">
-            <h3 className="font-bold text-lg mb-4">Shaxsiy ma'lumotlaringiz</h3>
+            <h3 className="font-bold text-lg mb-4">{t('password1')}
+            </h3>
 
             <div className="mb-5">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                    Ism <span className="text-red-500">*</span>
+                {t('name')} <span className="text-red-500">*</span>
                 </label>
                 <input
                     type="text"
@@ -26,7 +30,7 @@ export default function RecordInput() {
 
             <div className="mb-5">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                    Telefon raqam <span className="text-red-500">*</span>
+                {t('tell')} <span className="text-red-500">*</span>
                 </label>
                 <input
                     type="tel"
@@ -39,7 +43,7 @@ export default function RecordInput() {
 
             <div className="mb-5">
                 <label className="block text-sm font-medium mb-2 text-gray-700">
-                    Izoh
+                {t('comment')}
                 </label>
                 <input
                     type="email"
@@ -56,14 +60,14 @@ export default function RecordInput() {
                         className="h-[20px] w-[20px] text-black focus:ring-black border-gray-300 rounded accent-black checked:bg-black checked:border-black mt-1"
                     />
                     <p className="text-sm">
-                        Shaxsiy ma'lumotlarimni qayta ishlashga roziman va shartlarni o'qiganligimni tasdiqlayman.
+                     {t('password3')}
                     </p>
                 </label>
             </div>
 
 
             <div className="flex justify-between font-bold mt-4">
-                <span className="text-gray-900">Jami</span>
+                <span className="text-gray-900">{t('total')}</span>
                 <span className="text-gray-900">180 000 so'm</span>
             </div>
 
@@ -72,7 +76,7 @@ export default function RecordInput() {
                     to="/confirm"
                     className="block w-full text-center bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none"
                 >
-                    Yozuvni tasdiqlash
+                    {t('done2')}
                 </NavLink>
             </div>
         </div>

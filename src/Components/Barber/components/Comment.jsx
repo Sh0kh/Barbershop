@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 export default function Comment(){
     const reviews = [
         { initial: "Р", name: "Рустам", rating: 5, date: "2 мая 2025", thumbsUp: true },
@@ -5,12 +7,14 @@ export default function Comment(){
         { initial: "Х", name: "Хумоён", rating: 5, date: "30 апреля 2025", thumbsUp: false },
         { initial: "Ш", name: "Шавкат", rating: 5, date: "29 апреля 2025", thumbsUp: false },
       ];
+        const { t, i18n } = useTranslation();
+      
     return(
         <div className="comment max-w-[100%] mt-[10px] mx-auto bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <h1 className="commet_h1">Отзывы
+            <h1 className="commet_h1">{t('otziv')}
           </h1>
        <div className="commet_share">
-       <h2 className="text-sm font-medium text-gray-700 mb-2 text-center">Оцените и оставьте отзыв</h2>
+       <h2 className="text-sm font-medium text-gray-700 mb-2 text-center">{t('go-away')}</h2>
         <div className="flex justify-center mb-4">
           {[...Array(5)].map((_, i) => (
             <svg

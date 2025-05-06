@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 export default function ConfirmSer() {
+    const { t, i18n } = useTranslation();
+
     return (
         <div className="con_wrapper flex items-center justify-center gap-[30px] p-4">
             <div className="dark_con">
@@ -12,7 +16,7 @@ export default function ConfirmSer() {
                         <path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z" />
                     </svg>
                 </div>
-                <span>Yana yozilish</span>
+                <span>{t('more')}</span>
             </div>
 
             <div className="ff_con">
@@ -37,7 +41,7 @@ export default function ConfirmSer() {
                         </g>
                     </svg>
                 </div>
-                <span>Kalendaraga qo'shish</span>
+                <span>{t('calen')}</span>
             </div>
 
             <div className="ff_con">
@@ -54,7 +58,9 @@ export default function ConfirmSer() {
                         />
                     </svg>
                 </div>
-                <span>Ko'chirish</span>
+                <span>
+                {t('away')}
+                </span>
             </div>
 
             <div className="ff_con">
@@ -71,7 +77,7 @@ export default function ConfirmSer() {
                         />
                     </svg>
                 </div>
-                <span>Bekor qilish</span>
+                <span>   {t('non')}</span>
             </div>
         </div>
     );

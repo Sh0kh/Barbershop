@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import LogoUse from '../../LogoUsing';
+import { useTranslation } from 'react-i18next';
 
 export default function DateHero() {
   const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
   const [currentMonthIndex, setCurrentMonthIndex] = useState(4); // May = 4
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const { t, i18n } = useTranslation();
 
-  const times = {
-    'Kunduzgi': ['10:00', '13:30', '15:00', '16:30'],
-    'Tungi': ['18:00', '18:30', '19:00']
+  const times = { 
+    [t('day')]: ['10:00', '13:30', '15:00', '16:30'],
+    [t('evning')]: ['18:00', '18:30', '19:00']
   };
+  
 
   const handlePrevMonth = () => {
     setCurrentMonthIndex(prev => (prev === 0 ? 11 : prev - 1));
@@ -146,7 +149,7 @@ export default function DateHero() {
       {selectedTime && (
         <div className="mt-6 fixed bottom-0 bg-white left-0 right-0 max-w-xl mx-auto p-4 z-50 border-t border-gray-200">
           <NavLink to="/record" className="block w-full text-center bg-black  text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none">
-            Tayyor
+         { t('done')}
           </NavLink>
         </div>
       )}

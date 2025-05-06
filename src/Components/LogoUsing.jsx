@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../Components/UI//Icons/photo_2025-05-02_21-23-30.jpg';
+import { useTranslation } from 'react-i18next';
 
 export default function LogoUse() {
 
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation();
 
   return (
     <div className=" flex items-center mb-6">
@@ -23,7 +25,7 @@ export default function LogoUse() {
           <img src={logo} className="sevice_logo" alt="" />
           <div className=''>
             <h1 className="service_title font-bold text-lg"> © <span className="text-gray-500">Ustara</span> Barbershop</h1>
-            <p className="text-sm text-gray-600">Guliston shahar, O’zbekistonshox koʻchasi</p>
+            <p className="text-sm text-gray-600">{t('location')}</p>
           </div>
         </Link>
       </div>

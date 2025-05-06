@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function ServiceOne() {
   const [selectedServices, setSelectedServices] = useState([]);
+  const { t, i18n } = useTranslation();
 
   const handleServiceSelect = (service) => {
     setSelectedServices((prev) =>
@@ -14,31 +16,32 @@ export default function ServiceOne() {
 
   const services = [
     {
-      category: "Soch oldirish",
+      category: `${t('service-1')}`,
       items: [
         {
-          title: "Klassik soch oldirish + shakllantirish",
-          duration: "1 soat",
+          title: t('service-2'),
+          duration: `1 ${t('hour')}`,
           price: "180 000 so'm",
-          description: "Istagan soqqangizni professional ravishda bajarish.",
+          description: t('service-3'),
           id: "classic-cut",
         },
         {
-          title: "Mashina bilan soch oldirish",
-          duration: "30 daqiqa",
+          title: t('service-h'),
+          duration: `30 ${t('minute')}`,
           price: "120 000 so'm",
-          description: "Mashina bilan teng qilish hamda soch oldirish.",
+          description: t('service-mashine'),
           id: "machine-cut",
         },
         {
-          title: "Maxsus uzun soch oldirish",
-          duration: "1 soat",
+          title: t('service-mc'),
+          duration: `1 ${t('hour')}`,
           price: "180 000 so'm",
-          description: "Maxsus uzun soch oldirish xizmati.",
+          description: t('service-4'),
           id: "premium-cut",
         },
       ],
     },
+  
   ];
 
   const totalPrice = selectedServices.reduce((sum, serviceId) => {
@@ -95,11 +98,11 @@ export default function ServiceOne() {
       {selectedServices.length > 0 && (
         <div className="mt-6 fixed bottom-0 bg-white left-0 right-0 max-w-xl mx-auto p-4 z-50 border-t border-gray-200">
           <div className="text-gray-800 mb-4 flex items-center justify-between">
-            <p className="text-base">{selectedServices.length} xizmat {totalDuration}</p>
+            <p className="text-base">{selectedServices.length} {t('service1')} {totalDuration}</p>
             <p className="text-lg font-semibold">{totalPrice.toLocaleString()} so'm</p>
           </div>
           <NavLink to="/date" className="block w-full text-center bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none">
-            Sana va vaqtni tanlash
+            {t('data-nav')}
           </NavLink>
         </div>
       )}

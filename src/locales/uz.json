@@ -3,11 +3,11 @@
     "street":"Guliston ko'chasi, 5, Guliston, Guliston",
     "Special":"Mutaxassisni tanlash",
     "Barber":"Barber",
-    "otziv":"sharh",
+    "otziv":"Sharh",
     "home-day":"Ertangi kungi eng yaqin vaqt uchun yozilish:",
     "service":"Xizmatni tanlash",
     "go-away":"Baholang va fikr qoldiring",
-   "barber-text": "Farxod — O'zbekistonning eng yaxshi barberlaridan biri. Uzoq muddatli tajribaga ega bo'lib, har bir mijoz uchun noyob yondashuvni ta'minlaydi...",
+   "barber-text": " — O'zbekistonning eng yaxshi barberlaridan biri. Uzoq muddatli tajribaga ega bo'lib, har bir mijoz uchun noyob yondashuvni ta'minlaydi...",
     "barber-name":"Barber Farxod",
     "barber-select":"Ushbu mutaxassisni tanlash",
     "service-1":"Soch oldirish",
@@ -16,7 +16,7 @@
     "service-3":"Istagan soqqangizni professional ravishda bajarish.",
     "service-h":"Mashina bilan soch oldirish",
     "minute":"daqiqa",
-    "service1":"xizmat",
+    "service1":"Xizmat",
     "service-mashine":"Mashina bilan teng qilish hamda soch oldirish.",
     "service-mc":"Maxsus uzun soch oldirish",
     "service-4":"Maxsus uzun soch oldirish xizmati.",
@@ -32,7 +32,17 @@
     "password3":"Shaxsiy ma'lumotlarimni qayta ishlashga roziman va shartlarni o'qiganligimni tasdiqlayman.",
     "total":"Jami",
     "enter-name":"Ismingizni kiriting",
-    "after":"Yozuv tafsilotlari",
-    "done2":"Yozuvni tasdiqlash"
+    "after":"Sizning tanlovlaringiz",
+    "done2":"Yozuvni tasdiqlash",
+    "day-after":"Juma, 9-may",
+    "gone-aw": "Выбранные услуги",
+
+    "done3":"Siz yozildingiz",
+    "more":"Yana yozilish",
+    "calen":"Kalendaraga qo'shish",
+    "away":"Ko'chirish",
+    "non":"Bekor qilish",
+    "contact":"Aloqa",
+    "location":"Guliston shahar, O’zbekistonshox koʻchasi"
 
 }
