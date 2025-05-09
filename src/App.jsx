@@ -11,20 +11,35 @@ import Record from "./Components/Record/Record";
 import Barber from "./Components/Barber/Barber";
 import Confrim from "./Components/Confirm/Confirm";
 import ScrollToTop from "./Components/ScrollTop";
+import Login from "./Components/Login/Login";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import BarbersCreate from "./Components/Dashboard/components/Barbers/BarbersCreate";
+import Barbers from "./Components/Dashboard/components/Barbers/Barbers";
+import BarbersEdit from "./Components/Dashboard/components/Barbers/BarbersEdit";
 
 function App() {
   return (
     <Router>
-      <ScrollToTop /> {/* добавь этот компонент */}
+      <ScrollToTop /> 
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          <Route
+        <Route path="/login" element={<Login/>} />
+
+        <Route
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <AdminLayout />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
-          ></Route>
+          >
+            <Route path="admin/dashboard" element={<Dashboard/>} />
+            <Route path="admin/barbers" element={<Barbers/>} />
+            <Route path="admin/barbers/edit" element={<BarbersEdit/>} />
+
+            <Route path="admin/barbers/create" element={<BarbersCreate/>} />
+
+          
+          </Route>
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/service" element={<Service />} />
