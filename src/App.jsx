@@ -16,30 +16,29 @@ import Dashboard from "./Components/Dashboard/Dashboard";
 import BarbersCreate from "./Components/Dashboard/components/Barbers/BarbersCreate";
 import Barbers from "./Components/Dashboard/components/Barbers/Barbers";
 import BarbersEdit from "./Components/Dashboard/components/Barbers/BarbersEdit";
+import BarberDashboard from "./Components/Dashboard/BarberDashboard";
 
 function App() {
   return (
     <Router>
-      <ScrollToTop /> 
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<AppLayout />}>
-        <Route path="/login" element={<Login/>} />
+          <Route path="/login" element={<Login />} />
 
-        <Route
+          <Route
             element={
               // <ProtectedRoute>
                 <AdminLayout />
               // </ProtectedRoute>
             }
           >
-            <Route path="admin/dashboard" element={<Dashboard/>} />
-            <Route path="admin/barbers" element={<Barbers/>} />
-            <Route path="admin/barbers/edit" element={<BarbersEdit/>} />
-
-            <Route path="admin/barbers/create" element={<BarbersCreate/>} />
-
-          
+            <Route path="admin/dashboard" element={<Dashboard />} />
+            <Route path="admin/barbers" element={<Barbers />} />
+            <Route path="admin/barbers/edit" element={<BarbersEdit />} />
+            <Route path="admin/barbers/create" element={<BarbersCreate />} />
           </Route>
+
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/service" element={<Service />} />
@@ -49,6 +48,15 @@ function App() {
             <Route path="/confirm" element={<Confrim />} />
           </Route>
         </Route>
+
+        <Route
+          path="/barber/dashboard"
+          element={
+            // <ProtectedRoute>
+              <BarberDashboard />
+            // </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
