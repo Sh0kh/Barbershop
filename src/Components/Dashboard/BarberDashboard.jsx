@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { User, Edit, Scissors, Calendar, Clock } from "lucide-react";
+import BarberProfile from "./components/BarberProfile";
 
 export default function BarberDashboard() {
     const navigate = useNavigate();
@@ -23,10 +24,8 @@ export default function BarberDashboard() {
 
     return (
         <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
-            {/* Profile Section */}
-            
-            <div className="mb-6 p-4 bg-white rounded-lg shadow ">
-                       <div className="mx-auto">
+            <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
+                       <div className="mx-auto flex items-center justify-between">
                 <button 
                     onClick={handleLogout}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center justify-between  hover:bg-red-600 transition"
@@ -34,35 +33,20 @@ export default function BarberDashboard() {
                     <span>Chiqish</span>
                     <span className="ml-2">&#8594;</span> {/* Yo'naltiruvchi nuqta (→) */}
                 </button>
+
+                <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h2v-6h-2zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 
+                    2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"/></svg>
+                </button>
                                  </div>
 
-                <div className="flex flex-col items-center mb-4">
-                    <div className="relative">
-                        {barber.image ? (
-                            <img 
-                                src={barber.image} 
-                                alt="berber rasmi" 
-                                className="w-24 h-24 rounded-full object-cover"
-                            />
-                        ) : (
-                            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center">
-                                <User size={40} className="text-gray-400" />
-                            </div>
-                        )}
-                        <button className="absolute bottom-0 right-0 bg-blue-500 p-1 rounded-full text-white">
-                            <Edit size={16} />
-                        </button>
-                    </div>
-                    <h1 className="mt-2 text-xl font-bold">{barber.name}</h1>
-                    <h1 className="text-lg">{barber.surname}</h1>
-                    <div className="flex mt-2 text-sm text-gray-600">
-                    </div>
-                </div>
+            
 
-                {/* Navigation Links */}
+                <BarberProfile/>
+
                 <div className="grid grid-cols-3 gap-3 mt-4">
                     <NavLink 
-                        to="/berber/service" 
+                        to="/berber/dashboard/service" 
                         className="flex flex-col items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
                     >
                         <Scissors size={24} />
@@ -84,11 +68,7 @@ export default function BarberDashboard() {
                     </NavLink>
                 </div>
             </div>
-
-            {/* Logout Button */}
-     
-
-            {/* Quick Stats */}
+            
             <div className="grid grid-cols-2 gap-3 mb-6 mt-6">
                 <div className="bg-white p-4 rounded-lg shadow">
                     <div className="flex justify-between items-center">

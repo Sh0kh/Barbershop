@@ -1,26 +1,27 @@
 import { useState } from "react";
 import Swal from "sweetalert2";
-import $api from "axios";
-
+import { $api } from "../../../../utils";
 export default function BarbersCreate({ isOpen, onClose, refresh }) {
+  const [username, setUsername] = useState("");
   const [name, setName] = useState("");
+  const [lastname, setLastname] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [image, setImage] = useState(null); // Rasm fayl
-  const [imagePreview, setImagePreview] = useState(""); // Ko'rish uchun base64
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handlePhoneChange = (e) => {
     let value = e.target.value;
 
-    if (!value.startsWith('+998')) {
-      value = '+998';
+    if (!value.startsWith("+998")) {
+      value = "+998";
     }
 
-    const phoneNumber = value.replace(/[^0-9]/g, '').slice(3);
+    const phoneNumber = value.replace(/[^0-9]/g, "").slice(3);
     if (phoneNumber.length <= 9) {
-      setPhone('+998' + phoneNumber);
+      setPhone("+998" + phoneNumber);
     }
   };
 
@@ -37,8 +38,19 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
     }
   };
 
+  const resetForm = () => {
+    setUsername("");
+    setName("");
+    setLastname("");
+    setPhone("");
+    setPassword("");
+    setPasswordConfirmation("");
+    setImage(null);
+    setImagePreview("");
+  };
+
   const handleCreate = async () => {
-    if (!name || !phone || !password || !passwordConfirmation) {
+    if (!username || !name || !lastname || !phone || !password || !passwordConfirmation) {
       Swal.fire("Xato!", "Barcha maydonlarni to'ldiring.", "error");
       return;
     }
@@ -52,19 +64,21 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
     try {
       const formData = new FormData();
 
+      formData.append("username", username);
       formData.append("name", name);
+      formData.append("lastname", lastname);
       formData.append("phone", phone);
       formData.append("password", password);
       formData.append("password_confirmation", passwordConfirmation);
-      
+
       if (image) {
-        formData.append("image", image); // Backendga yuborish uchun
+        formData.append("image", image);
       }
 
-      await $api.post("api/teachers", formData, {
+      await $api.post("/barbers", formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       Swal.fire({
@@ -98,15 +112,6 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
     }
   };
 
-  const resetForm = () => {
-    setName("");
-    setPhone("");
-    setPassword("");
-    setPasswordConfirmation("");
-    setImage(null);
-    setImagePreview("");
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -118,7 +123,9 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
         </div>
 
         <div className="mb-4 text-center">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Sartarosh rasmi</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Sartarosh rasmi
+          </label>
           <div className="relative mx-auto w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition">
             <input
               type="file"
@@ -127,7 +134,11 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
               className="absolute inset-0 opacity-0 cursor-pointer"
             />
             {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-full object-cover"
+              />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
                 <span>+</span>
@@ -138,6 +149,17 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
 
         <div className="space-y-4">
           <div>
+            <label className="block text-sm text-gray-700">Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username kiriting"
+              className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
             <label className="block text-sm text-gray-700">Ism</label>
             <input
               type="text"
@@ -147,6 +169,18 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
               className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
+
+          <div>
+            <label className="block text-sm text-gray-700">Familiya</label>
+            <input
+              type="text"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+              placeholder="Familiya kiriting"
+              className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+
           <div>
             <label className="block text-sm text-gray-700">Telefon</label>
             <input
@@ -154,12 +188,13 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
               value={phone}
               onChange={handlePhoneChange}
               className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              maxLength={12}
+              maxLength={13}
               pattern="\+998[0-9]{9}"
               title="Telefon raqami +998 bilan boshlanib, 9 raqamdan iborat bo‘lishi kerak"
               required
             />
           </div>
+
           <div>
             <label className="block text-sm text-gray-700">Parol</label>
             <input
@@ -170,6 +205,7 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
               className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
+
           <div>
             <label className="block text-sm text-gray-700">Parolni tasdiqlash</label>
             <input
@@ -180,6 +216,7 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
               className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
           </div>
+
           <button
             disabled={loading}
             onClick={handleCreate}

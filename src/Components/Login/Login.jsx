@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Input } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import axios from '../../utils/axios';
 
 const Login = () => {
   const [phone, setPhone] = useState('+998');
@@ -11,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handlePhoneChange = (e) => {
-    // Ensure +998 prefix is always maintained
+  
     const value = e.target.value;
     if (value.startsWith('+998')) {
       setPhone(value);
@@ -30,7 +30,7 @@ const Login = () => {
 
       console.log('Yuborilayotgan ma\'lumotlar:', loginData);
 
-      const response = await axios.post('/api/login', loginData);
+      const response = await axios.post('/login', loginData);
       const token = response.data.token;
       const role = response.data.role || 'user';
 
@@ -49,14 +49,22 @@ const Login = () => {
           showConfirmButton: false,
         });
 
-        if (role === 'admin' || role === 'teacher') {
+        if (role === 'admin') {
           navigate('/admin/dashboard');
-        } else {
+        }
+      
+
+        else {
           navigate('/');
+
         }
       } else {
         throw new Error('Token topilmadi');
       }
+
+       if (role === 'barber') {
+          navigate('/barber/dashboard');
+        }
     } catch (error) {
       console.error('Xatolik:', error.response?.data);
       Swal.fire({

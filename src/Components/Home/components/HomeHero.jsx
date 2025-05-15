@@ -36,7 +36,6 @@ export default function HomeHero() {
         </div>
       </div>
 
-      {/* Qolgan kontent o'zgarishsiz qoladi */}
       <div className="relative w-full h-70 bg-black">
         <img
           src={Foto}

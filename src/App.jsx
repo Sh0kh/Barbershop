@@ -17,6 +17,7 @@ import BarbersCreate from "./Components/Dashboard/components/Barbers/BarbersCrea
 import Barbers from "./Components/Dashboard/components/Barbers/Barbers";
 import BarbersEdit from "./Components/Dashboard/components/Barbers/BarbersEdit";
 import BarberDashboard from "./Components/Dashboard/BarberDashboard";
+import MyService from "./Components/Dashboard/components/Service/MyService";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="admin/barbers" element={<Barbers />} />
             <Route path="admin/barbers/edit" element={<BarbersEdit />} />
             <Route path="admin/barbers/create" element={<BarbersCreate />} />
+
           </Route>
 
           <Route element={<MainLayout />}>
@@ -49,11 +51,14 @@ function App() {
           </Route>
         </Route>
 
+
+        <Route path="/berber/dashboard/service" element={<MyService/>} />
         <Route
           path="/barber/dashboard"
           element={
             // <ProtectedRoute>
               <BarberDashboard />
+            
             // </ProtectedRoute>
           }
         />

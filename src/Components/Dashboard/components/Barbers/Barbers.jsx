@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 import BarberCreate from "./BarbersCreate";
 import BarberEdit from "./BarbersEdit";
-import Swal from "sweetalert2";
 
 export default function Barbers() {
   const [barbers, setBarbers] = useState([]);
@@ -11,37 +12,16 @@ export default function Barbers() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedBarber, setSelectedBarber] = useState(null);
 
-  // Mock data - aslida API dan olinadi
-  const mockBarbers = [
-    {
-      id: 1,
-      name: "Jasur Aliyev",
-      phone: "+998 90 123 45 67",
-      specialization: "Klassik soch olish",
-      experience: "5 yil",
-      image: "https://i.pravatar.cc/150?img=1 " // Rasm URL
-    },
-    {
-      id: 2,
-      name: "Oybek Qodirov",
-      phone: "+998 91 234 56 78",
-      specialization: "Zamonaviy uslublar",
-      experience: "3 yil",
-      image: "https://i.pravatar.cc/150?img=2 "
-    },
-    {
-      id: 3,
-      name: "Sardor Bahodirov",
-      phone: "+998 93 345 67 89",
-      specialization: "Soqol shakllantirish",
-      experience: "7 yil",
-      image: "https://i.pravatar.cc/150?img=3 "
-    }
-  ];
+  const token = localStorage.getItem("token"); 
 
   const fetchBarbers = async () => {
     try {
-      setBarbers(mockBarbers);
+      const response = await axios.get("/barbers", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setBarbers(response.data);
       setLoading(false);
     } catch (error) {
       setError(error.response?.data?.message || error.message);
@@ -63,7 +43,14 @@ export default function Barbers() {
 
     if (result.isConfirmed) {
       try {
+        await axios.delete(`/barbers/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         setBarbers(barbers.filter((barber) => barber.id !== id));
+
         Swal.fire({
           title: "O'chirildi!",
           icon: "success",
@@ -125,12 +112,12 @@ export default function Barbers() {
             <thead className="bg-gray-100 text-left text-sm md:text-base text-gray-600">
               <tr>
                 <th className="p-4 font-semibold">#</th>
-
                 <th className="p-4 font-semibold">Rasm</th>
                 <th className="p-4 font-semibold">Ismi</th>
+                <th className="p-4 font-semibold">Username</th>
+
                 <th className="p-4 font-semibold">Telefon</th>
                 <th className="p-4 font-semibold">Mutaxassisligi</th>
-                <th className="p-4 font-semibold">Tajribasi</th>
                 <th className="p-4 font-semibold text-right">Amallar</th>
               </tr>
             </thead>
@@ -140,7 +127,6 @@ export default function Barbers() {
                   key={barber.id}
                   className="hover:bg-gray-50 transition-colors duration-200"
                 >
-                 
                   <td className="p-4 text-gray-700">{index + 1}</td>
                   <td className="p-4">
                     <img
@@ -159,10 +145,11 @@ export default function Barbers() {
                       style={{ cursor: 'pointer' }}
                     />
                   </td>
-                  <td className="p-4 font-medium text-gray-800">{barber.name}</td>
+                  <td className="p-4 font-medium text-gray-800">{barber.name} {barber.lastname}</td>
+                  <td className="p-4 font-medium text-gray-800">{barber.username}</td>
+
                   <td className="p-4 text-gray-600">{barber.phone}</td>
-                  <td className="p-4 text-gray-600">{barber.specialization}</td>
-                  <td className="p-4 text-gray-600">{barber.experience}</td>
+                  <td className="p-4 text-gray-600">{barber.role}</td>
                   <td className="p-4 flex justify-end space-x-2">
                     <button
                       onClick={() => {
@@ -172,18 +159,14 @@ export default function Barbers() {
                       className="text-yellow-600 hover:text-yellow-800 hover:bg-yellow-100 p-2 rounded-full transition"
                       title="Tahrirlash"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M3 21v-4.25L16.2 3.575q.3-.275.663-.425t.762-.15t.775.15t.65.45L20.425 5q.3.275.438.65T21 6.4q0 .4-.137.763t-.438.662L7.25 21zM17.6 7.8L19 6.4L17.6 5l-1.4 1.4z"/>
-                      </svg>
+                      ✏️
                     </button>
                     <button
                       onClick={() => handleDelete(barber.id)}
                       className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition"
                       title="O'chirish"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"/>
-                      </svg>
+                      🗑️
                     </button>
                   </td>
                 </tr>

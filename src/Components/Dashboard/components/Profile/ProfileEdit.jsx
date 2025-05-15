@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { $api } from "../../../../utils";
 
-export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
+export default function ProfileEdit({ isOpen, onClose, refresh, barber }) {
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [lastname, setLastname] = useState("");
@@ -62,7 +62,7 @@ export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
         formData.append("image", image);
       }
 
-      await $api.post(`/barbers/${barber.id}`, formData, {
+      await $api.post(`/profile`, formData, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
