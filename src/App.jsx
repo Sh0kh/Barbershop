@@ -20,7 +20,7 @@ import BarberDashboard from "./Components/Dashboard/BarberDashboard";
 
 function App() {
   return (
-    <Router>
+    <Router >
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<AppLayout />}>
@@ -41,7 +41,7 @@ function App() {
 
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
-            <Route path="/service" element={<Service />} />
+            <Route path="/service/:barberId" element={<Service />} />
             <Route path="/date" element={<Date />} />
             <Route path="/record" element={<Record />} />
             <Route path="/barberinfo" element={<Barber />} />

@@ -5,36 +5,16 @@ import LogoUse from '../../LogoUsing';
 import { useTranslation } from 'react-i18next';
 
 export default function ServiceHero() {
-  const [openAccordion, setOpenAccordion] = useState(0);
-  const [selectedServices, setSelectedServices] = useState([]);
   const { t, i18n } = useTranslation();
 
-  const toggleAccordion = (index) => {
-    setOpenAccordion(openAccordion === index ? null : index);
-  };
+  const getService = async ()=>{
+    try{
 
-  const handleServiceSelect = (service) => {
-    setSelectedServices((prev) =>
-      prev.includes(service)
-        ? prev.filter((s) => s !== service)
-        : [...prev, service]
-    );
-  };
+    }catch(error){
+      console.log(error)
+    }
+  }
 
-
-  
-
-  const totalPrice = selectedServices.reduce((sum, serviceId) => {
-    const service = services
-      .flatMap((cat) => cat.items)
-      .find((item) => item.id === serviceId);
-    return sum + parseInt(service?.price.replace(/\D/g, '') || 0);
-  }, 0);
-
-  const totalDuration = selectedServices
-    .map((serviceId) => services.flatMap((cat) => cat.items).find((item) => item.id === serviceId)?.duration)
-    .filter(Boolean)
-    .join(' + ');
 
   return (
     <div className="max-w-[100%] min-h-screen pb-24 mx-auto p-4 bg-white">
