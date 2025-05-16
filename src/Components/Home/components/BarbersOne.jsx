@@ -23,6 +23,7 @@ export default function BarbersOne() {
       setData(response?.data?.data)
     } catch (error) {
       console.log(error)
+      console.log(error.response?.data)
     } finally {
       setLoadin(false)
     }
@@ -106,12 +107,12 @@ export default function BarbersOne() {
                         <Star className="fill-yellow-400 text-yellow-400 mr-[10px]" size={16} />
 
                         {/* <span className="rating_span ml-1 font-medium">{barber.rating.toFixed(1)}</span> */}
-                        <span className="rating_span text-gray-500 ml-2 text-sm">{barber.reviews || 10} {t('otziv')}</span>
+                        <span className="rating_span text-gray-500 ml-2 text-sm">{barber.review_count } {t('otziv')}</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2 relative">
-                    <NavLink to="/barberinfo" className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100">
+                    <NavLink to={`/barberinfo/${barber?.id}`} className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100">
                       <Info size={18} />
                     </NavLink>
                     <div
@@ -127,7 +128,7 @@ export default function BarbersOne() {
                 <div className="mt-4">
                   <p className="text-gray-500 text-sm mb-3">{t('home-day')} </p>
                   <div className="flex flex-wrap gap-2">
-                    {/* {barber.availableTimes.map((time, index) => (
+                    {barber?.available_times_tomorrow?.map((time, index) => (
                     <button
                       key={index}
                       className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedTime?.time === time && selectedTime?.barberId === barber.id
@@ -141,7 +142,7 @@ export default function BarbersOne() {
                     >
                       {time}
                     </button>
-                  ))} */}
+                  ))}
                   </div>
                 </div>
               </div>

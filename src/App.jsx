@@ -18,6 +18,7 @@ import Barbers from "./Components/Dashboard/components/Barbers/Barbers";
 import BarbersEdit from "./Components/Dashboard/components/Barbers/BarbersEdit";
 import BarberDashboard from "./Components/Dashboard/BarberDashboard";
 import MyService from "./Components/Dashboard/components/Service/MyService";
+import ProfileEdit from "./Components/Dashboard/components/ProfileEdit";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
           <Route
             element={
               // <ProtectedRoute>
-                <AdminLayout />
+              <AdminLayout />
               // </ProtectedRoute>
             }
           >
@@ -46,19 +47,26 @@ function App() {
             <Route path="/service/:barberId" element={<Service />} />
             <Route path="/date" element={<Date />} />
             <Route path="/record" element={<Record />} />
-            <Route path="/barberinfo" element={<Barber />} />
+            <Route path="/barberinfo/:ID" element={<Barber />} />
             <Route path="/confirm" element={<Confrim />} />
           </Route>
         </Route>
 
 
-        <Route path="/berber/dashboard/service" element={<MyService/>} />
+        <Route path="/berber/dashboard/service" element={<MyService />} />
         <Route
           path="/barber/dashboard"
           element={
             // <ProtectedRoute>
-              <BarberDashboard />
-            
+            <BarberDashboard />
+            // </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/profile"
+          element={
+            // <ProtectedRoute>
+            <ProfileEdit />
             // </ProtectedRoute>
           }
         />
