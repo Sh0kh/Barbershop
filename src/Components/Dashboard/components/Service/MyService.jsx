@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MyService() {
+
+  const navigate = useNavigate()
+
   const [services, setServices] = useState([
     {
       category: "Soch xizmatlari",
@@ -31,48 +35,50 @@ export default function MyService() {
   ]);
 
   const handleLogout = () => {
-    console.log("Chiqish bosildi");
-   
+    navigate(-1)
   };
 
   const handleAddService = () => {
     console.log("Yangi xizmat qo‘shish");
-   
+
   };
 
   const handleEdit = (itemId) => {
     console.log("Edit: ", itemId);
- 
+
   };
 
   const handleDelete = (itemId) => {
     console.log("Delete: ", itemId);
-  
+
   };
 
   return (
     <div className="mx-auto max-w-[600px] pb-24  min-h-screen p-4">
-      <div className="flex justify-between items-center mb-6">
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-        >
-          Chiqish
-        </button>
-        <button
-          onClick={handleAddService}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          + Yangi xizmat qo‘shish
-        </button>
+      <div className="mb-1 p-4 bg-white rounded-lg shadow  ">
+
+        <div className="flex justify-between items-center ">
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Ortga
+          </button>
+          <button
+            onClick={handleAddService}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            + Yangi xizmat qo‘shish
+          </button>
+        </div>
       </div>
 
       {services.map((service, index) => (
         <div key={index} className="rounded-lg mb-4">
           <div className="mb-2 p-2">
-          
+
           </div>
-          <div className="p-2 bg-white pb-[30px]">
+          <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
             {service.items.map((item, itemIndex) => (
               <div
                 key={itemIndex}
@@ -90,14 +96,14 @@ export default function MyService() {
                   <div className="flex flex-col gap-2 ml-4">
                     <button
                       onClick={() => handleEdit(item.id)}
-                       className="text-yellow-600 hover:text-yellow-800 hover:bg-yellow-100 p-2 rounded-full transition"
+                      className="text-yellow-600 hover:text-yellow-800 hover:bg-yellow-100 p-2 rounded-full transition"
                       title="Tahrirlash"
                     >
                       ✏️
                     </button>
                     <button
                       onClick={() => handleDelete(item.id)}
-                   className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition"
+                      className="text-red-600 hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition"
                       title="O'chirish"
                     >
                       🗑️

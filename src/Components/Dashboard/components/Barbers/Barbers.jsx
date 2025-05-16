@@ -122,7 +122,7 @@ export default function Barbers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {barbers.map((barber, index) => (
+              {barbers?.map((barber, index) => (
                 <tr
                   key={barber.id}
                   className="hover:bg-gray-50 transition-colors duration-200"

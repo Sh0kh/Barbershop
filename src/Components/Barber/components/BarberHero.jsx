@@ -6,17 +6,6 @@ import { useTranslation } from 'react-i18next';
 export default function BarberHero() {
     const { t, i18n } = useTranslation();
 
-    const getBarber = async ()=>{
-        try{
-            const response = await axios.get(`barber/${1}`)
-        }catch(error){
-            console.log(error)
-        }
-    }
-
-    useEffect(()=>{
-        getBarber()
-    },[])
 
     return (
         <>
