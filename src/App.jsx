@@ -30,9 +30,9 @@ function App() {
 
           <Route
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
               <AdminLayout />
-              // </ProtectedRoute>
+               </ProtectedRoute>
             }
           >
             <Route path="admin/dashboard" element={<Dashboard />} />
@@ -57,17 +57,17 @@ function App() {
         <Route
           path="/barber/dashboard"
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
             <BarberDashboard />
-            // </ProtectedRoute>
+             </ProtectedRoute>
           }
         />
         <Route
           path="/barber/profile"
           element={
-            // <ProtectedRoute>
+            <ProtectedRoute>
             <ProfileEdit />
-            // </ProtectedRoute>
+             </ProtectedRoute>
           }
         />
       </Routes>
