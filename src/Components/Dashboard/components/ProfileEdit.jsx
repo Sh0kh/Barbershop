@@ -55,7 +55,7 @@ export default function Profile() {
     };
 
     const handleUpdate = async () => {
-        if ( !name || !lastname || !phone) {
+        if (!name || !lastname || !phone) {
             Swal.fire("Xato!", "Barcha majburiy maydonlar to‘ldirilishi kerak.", "error");
             return;
         }
@@ -186,7 +186,7 @@ export default function Profile() {
                         </span>
                         <textarea
                             value={infoUz}
-                            onChange={(e)=>setinfoUz(e.target.value)}
+                            onChange={(e) => setinfoUz(e.target.value)}
                             className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             name="infoUz">
 
@@ -198,7 +198,7 @@ export default function Profile() {
                         </span>
                         <textarea
                             value={infoRu}
-                            onChange={(e)=>setinfoRu(e.target.value)}
+                            onChange={(e) => setinfoRu(e.target.value)}
                             className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                             name="infoUz">
 

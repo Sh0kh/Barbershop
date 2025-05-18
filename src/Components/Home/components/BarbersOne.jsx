@@ -13,7 +13,12 @@ export default function BarbersOne() {
   const [barberId, setBarberId] = useState(null)
   const [data, setData] = useState([])
   const [loading, setLoadin] = useState(true)
+  const [selectedTime, setSelectedTime] = useState(null);
 
+
+  const handleSelectTime = (time, barberId) => {
+    setSelectedTime({ time, barberId });
+  };
 
 
   const getAllBarbers = async () => {
@@ -107,7 +112,7 @@ export default function BarbersOne() {
                         <Star className="fill-yellow-400 text-yellow-400 mr-[10px]" size={16} />
 
                         {/* <span className="rating_span ml-1 font-medium">{barber.rating.toFixed(1)}</span> */}
-                        <span className="rating_span text-gray-500 ml-2 text-sm">{barber.review_count } {t('otziv')}</span>
+                        <span className="rating_span text-gray-500 ml-2 text-sm">{barber.review_count} {t('otziv')}</span>
                       </div>
                     </div>
                   </div>
@@ -128,21 +133,28 @@ export default function BarbersOne() {
                 <div className="mt-4">
                   <p className="text-gray-500 text-sm mb-3">{t('home-day')} </p>
                   <div className="flex flex-wrap gap-2">
-                    {barber?.available_times_tomorrow?.map((time, index) => (
-                    <button
-                      key={index}
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedTime?.time === time && selectedTime?.barberId === barber.id
-                        ? 'bg-black text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                        }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectTime(time, barber.id);
-                      }}
-                    >
-                      {time}
-                    </button>
-                  ))}
+                    {(() => {
+                      const times = barber?.available_times_tomorrow || [];
+                      const middleIndex = Math.floor(times.length / 2);
+                      const start = Math.max(0, middleIndex - 2);
+                      const selectedTimes = times.slice(start, start + 5);
+
+                      return selectedTimes.map((time, index) => (
+                        <button
+                          key={index}
+                          className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedTime?.time === time && selectedTime?.barberId === barber.id
+                              ? 'bg-black text-white'
+                              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                            }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSelectTime(time, barber.id);
+                          }}
+                        >
+                          {` ${time}`}
+                        </button>
+                      ));
+                    })()}
                   </div>
                 </div>
               </div>

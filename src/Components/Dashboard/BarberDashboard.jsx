@@ -8,6 +8,7 @@ import { $api } from "../../utils";
 
 
 
+
 export default function BarberDashboard() {
     const navigate = useNavigate();
 
@@ -76,7 +77,7 @@ export default function BarberDashboard() {
                     </button>
                 </div>
                 <BarberProfile barber={barber} />
-                <div className="grid grid-cols-3 gap-3 mt-4">
+                <div className="grid grid-cols-2  gap-3 mt-4">
                     <NavLink
                         to="/berber/dashboard/service"
                         className="flex flex-col items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
@@ -85,20 +86,20 @@ export default function BarberDashboard() {
                         <span className="mt-1 text-sm">Xizmatlar</span>
                     </NavLink>
                     <NavLink
-                        to="/berber/date"
+                        to="/barber/dashboard/workTime"
                         className="flex flex-col items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
                     >
                         <Calendar size={24} />
-                        <span className="mt-1 text-sm">Kalendar</span>
-                    </NavLink>
-                    <NavLink
-                        to="/berber/orders"
-                        className="flex flex-col items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
-                    >
-                        <Clock size={24} />
-                        <span className="mt-1 text-sm">Buyurtmalar</span>
+                        <span className="mt-1 text-sm">Ish vaqti</span>
                     </NavLink>
                 </div>
+                <NavLink
+                    to="/barber/dashboard/dayOff"
+                    className="flex flex-col items-center mt-[10px] p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
+                >
+                    <Calendar size={24} />
+                    <span className="mt-1 text-sm">Dam olish kuni</span>
+                </NavLink>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-6 mt-6">
