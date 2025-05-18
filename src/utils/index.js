@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const BASE_URL = "https://barbergo.uz";
-// export const BASE_URL = " https://solid-pots-live.loca.lt";
 
 
 export const $api = axios.create({

@@ -1,92 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Orders from "./components/Orders/Orders";
+import { $api } from "../../utils";
+import OrderCreate from "./components/Orders/OrderCreate";
 
 export default function Dashboard() {
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      clientName: "Abdulaziz Karimov",
-      phone: "+998 90 123 45 67",
-      services: ["Soch olish (klassik)", "Soqol olish"],
-      price: 120000,
-      date: "2025-05-09T14:30:00",
-      barber: "Jasur Aliyev",
-      status: "kutilmoqda" 
-    },
-    {
-      id: 2,
-      clientName: "Firdavs Toshmatov",
-      phone: "+998 99 765 43 21",
-      services: ["Fade soch olish", "Yuz massaji"],
-      price: 150000,
-      date: "2025-05-09T16:00:00",
-      barber: "Oybek Qodirov",
-      status: "bajarilmoqda"
-    },
-    {
-      id: 3,
-      clientName: "Bobur Mamatov",
-      phone: "+998 93 456 78 90",
-      services: ["VIP soch olish", "Soqol shakllantirish", "Yuz parvarishi"],
-      price: 200000,
-      date: "2025-05-09T17:30:00",
-      barber: "Jasur Aliyev",
-      status: "bajarildi"
-    },
-    {
-      id: 4,
-      clientName: "Firdavs Umarov",
-      phone: "+998 97 234 56 78",
-      services: ["Bola soch olish", "Quloq atrofi tozalash"],
-      price: 80000,
-      date: "2025-05-10T10:00:00",
-      barber: "Sardor Bahodirov",
-      status: "kutilmoqda"
-    },
-    {
-      id: 5,
-      clientName: "Javohir Solijonov",
-      phone: "+998 94 876 54 32",
-      services: ["Soch bo'yash", "Soch olish (zamonaviy)"],
-      price: 250000,
-      date: "2025-05-10T11:30:00",
-      barber: "Oybek Qodirov",
-      status: "kutilmoqda"
-    }
-  ]);
-
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const statusColors = {
-    kutilmoqda: "bg-blue-100 text-blue-800",
-    bajarilmoqda: "bg-yellow-100 text-yellow-800",
-    bajarildi: "bg-green-100 text-green-800"
+  const fetchOrders = async () => {
+    try {
+      const response = await $api.get("/orders");
+      setOrders(response.data);
+    } catch (error) {
+      setError(error.response?.data?.message || error.message || "Buyurtmalarni yuklashda xatolik yuz berdi");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    
-    return `${day}.${month}.${year} - ${hours}:${minutes}`;
-  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   const formatPrice = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
   };
 
-  const handleEdit = (orderId) => {
-    // Bu yerda edit logikasi bo'lishi kerak
-    console.log("Edit order:", orderId);
-    alert(`Edit order with ID: ${orderId}`);
-  };
-
-  const handleDeleteClick = (orderId) => {
-    setOrderToDelete(orderId);
-    setShowDeleteModal(true);
+  const handleCreate = () => {
+    setIsCreateOpen(true);
   };
 
   const confirmDelete = () => {
@@ -95,10 +40,17 @@ export default function Dashboard() {
     setOrderToDelete(null);
   };
 
-  const handleCreate = () => {
-    console.log("Create new order");
-    alert("Create new order clicked");
-  };
+  if (loading) return (
+    <div className="pt-[80px] px-4 bg-[#f8f9ff] min-h-screen flex items-center justify-center">
+      <p className="text-xl">Yuklanmoqda...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="pt-[80px] px-4 bg-[#f8f9ff] min-h-screen flex items-center justify-center">
+      <p className="text-xl text-red-500">Xatolik: {error}</p>
+    </div>
+  );
 
   return (
     <div className="pt-[80px] px-4 bg-[#f8f9ff] min-h-screen">
@@ -115,6 +67,12 @@ export default function Dashboard() {
           </svg>
           Yangi buyurtma
         </button>
+
+        <OrderCreate
+          isOpen={isCreateOpen}
+          onClose={() => setIsCreateOpen(false)}
+          refresh={fetchOrders}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -161,70 +119,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {orders.map((order) => (
-          <div key={order.id} className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-bold text-lg">{order.clientName}</h3>
-                <p className="text-gray-600">{order.phone}</p>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[order.status]}`}>
-                {order.status === "kutilmoqda" ? "Kutilmoqda" : 
-                 order.status === "bajarilmoqda" ? "Bajarilmoqda" : "Bajarildi"}
-              </span>
-            </div>
-            
-            <div className="border-t border-gray-100 pt-4 mb-4">
-              <h4 className="text-sm font-semibold text-gray-500 mb-2">XIZMATLAR:</h4>
-              <ul className="space-y-1">
-                {order.services.map((service, idx) => (
-                  <li key={idx} className="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span className="text-gray-700">{service}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="flex justify-between items-center text-sm">
-              <div>
-                <p className="font-semibold text-gray-700">{formatPrice(order.price)}</p>
-                <p className="text-gray-500">{formatDate(order.date)}</p>
-              </div>
-              <div className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span className="text-gray-700">{order.barber}</span>
-              </div>
-            </div>
-
-            <div className="mt-4 flex justify-end space-x-2">
-              <button 
-                onClick={() => handleEdit(order.id)}
-                className="px-3 py-1 bg-blue-50 text-blue-600 rounded-md text-sm hover:bg-blue-100 transition flex items-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                Edit
-              </button>
-              <button 
-                onClick={() => handleDeleteClick(order.id)}
-                className="px-3 py-1 bg-red-50 text-red-600 rounded-md text-sm hover:bg-red-100 transition flex items-center"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+      <Orders orders={orders} loading={false} error={null} />
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
