@@ -19,6 +19,10 @@ import BarbersEdit from "./Components/Dashboard/components/Barbers/BarbersEdit";
 import BarberDashboard from "./Components/Dashboard/BarberDashboard";
 import MyService from "./Components/Dashboard/components/Service/MyService";
 import ProfileEdit from "./Components/Dashboard/components/ProfileEdit";
+import BarberServiceCreate from "./Components/BarberService/BarberServiceCreate";
+import BarberServiceEdit from "./Components/BarberService/BarberServiceEdit";
+import BarberWorkTime from "./Components/BarberWorkTime/BarberWorkTime";
+import BarberDayOff from "./Components/BarberDayOff/BarberDayOff";
 
 function App() {
   return (
@@ -57,17 +61,49 @@ function App() {
         <Route
           path="/barber/dashboard"
           element={
-            // <ProtectedRoute>
-            <BarberDashboard />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <BarberDashboard />
+            </ProtectedRoute>
           }
         />
         <Route
           path="/barber/profile"
           element={
-            // <ProtectedRoute>
-            <ProfileEdit />
-            // </ProtectedRoute>
+            <ProtectedRoute>
+              <ProfileEdit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/dashboard/service/create"
+          element={
+            <ProtectedRoute>
+              <BarberServiceCreate />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/dashboard/service/edit/:ID"
+          element={
+            <ProtectedRoute>
+              <BarberServiceEdit />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/dashboard/workTime"
+          element={
+            <ProtectedRoute>
+              <BarberWorkTime />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/dashboard/dayOff"
+          element={
+            <ProtectedRoute>
+              <BarberDayOff />
+            </ProtectedRoute>
           }
         />
       </Routes>
