@@ -3,6 +3,7 @@ import { Button, Input } from '@material-tailwind/react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import axios from '../../utils/axios';
+import Logo from '../../Components/UI/Icons/HomeLogo.jpg';
 
 const Login = () => {
   const [phone, setPhone] = useState('+998');
@@ -11,24 +12,30 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handlePhoneChange = (e) => {
-  
-    const value = e.target.value;
-    if (value.startsWith('+998')) {
-      setPhone(value);
-    } else {
-      setPhone('+998' + value.replace('+998', ''));
+    const input = e.target.value;
+
+    // Убедимся, что значение всегда начинается с '+998'
+    if (!input.startsWith('+998')) {
+      setPhone('+998');
+      return;
     }
+
+    const digitsOnly = input.slice(4).replace(/\D/g, '');
+
+    // Ограничиваем до 9 цифр после '+998'
+    const limitedDigits = digitsOnly.slice(0, 9);
+
+    // Объединяем и устанавливаем
+    setPhone('+998' + limitedDigits);
   };
 
   const handleLogin = async () => {
     try {
       setLoading(true);
       const loginData = {
-        phone: phone,
-        password: password,
+        phone,
+        password,
       };
-
-      console.log('Yuborilayotgan ma\'lumotlar:', loginData);
 
       const response = await axios.post('/login', loginData);
       const token = response.data.token;
@@ -51,20 +58,24 @@ const Login = () => {
 
         if (role === 'admin') {
           navigate('/admin/dashboard');
-        }
-      
-
-        else {
-          navigate('/');
-
-        }
-      } else {
-        throw new Error('Token topilmadi');
-      }
-
-       if (role === 'barber') {
+        } else if (role === 'barber') {
           navigate('/barber/dashboard');
+        } else {
+          navigate('/');
         }
+      } else if (response?.data?.status === "error") {
+        Swal.fire({
+          title: 'Xatolik!',
+          text: 'Telefon raqam yoki parol xato',
+          icon: 'error',
+          position: 'top-end',
+          timer: 3000,
+          timerProgressBar: true,
+          showCloseButton: true,
+          toast: true,
+          showConfirmButton: false,
+        });
+      }
     } catch (error) {
       console.error('Xatolik:', error.response?.data);
       Swal.fire({
@@ -90,106 +101,63 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="flex w-full max-w-4xl bg-white rounded-xl overflow-hidden shadow-xl">
-        <div className="relative w-2/5 bg-black text-white p-8 flex flex-col justify-between">
-          <div className="absolute top-0 right-0 h-full w-12 overflow-hidden">
-            <div className="h-full w-24 bg-white transform translate-x-6">
-              {Array.from({ length: 20 }).map((_, i) => (
-                <div 
-                  key={i} 
-                  className="absolute bg-black" 
-                  style={{
-                    height: '72px', 
-                    width: '72px', 
-                    borderRadius: '50%',
-                    top: `${i * 40 - 20}px`,
-                    right: '-36px'
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="z-10">
-            <h2 className="text-xl font-medium mb-1">Xush kelibsiz !!</h2>
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mr-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold">Login page</h1>
-            </div>
-          
-          </div>
-
-          <div className="text-xs text-gray-400">
-            &copy; {new Date().getFullYear()} SysName. All rights reserved.
-          </div>
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 space-y-8 border border-gray-200">
+        <div className="text-center">
+          <img src={Logo} alt="Logo" className="mx-auto h-32 w-auto object-contain" />
+          <h2 className="mt-4 text-2xl font-semibold text-black">Tizimga kirish</h2>
+          <p className="mt-2 text-sm text-gray-500">Kirish uchun ma'lumotlarni kiriting</p>
         </div>
 
-        <div className="w-3/5 p-8 flex flex-col justify-center">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-8">
-            Tizimga kirish
-          </h2>
-
-          <div className="space-y-6">
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                Telefon raqam
-              </label>
-              <div className="relative">
-                <Input
-                  id="phone"
-                  type="text"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  className="border-gray-300"
-                  required
-                  onKeyPress={handleKeyPress}
-                  placeholder="+998 XX XXX XX XX"
-                  crossOrigin={undefined}
-                />
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500 text-sm">
-                  <span className="sr-only">Phone prefix</span>
-                </div>
-              </div>
-            </div>
-
-  
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Parol
-              </label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="border-gray-300"
-                required
-                onKeyPress={handleKeyPress}
-                placeholder="Parolni kiriting"
-                crossOrigin={undefined}
-              />
-            </div>
-
-      
-         
-
-     
-            <Button
-              onClick={handleLogin}
-              disabled={loading}
-              className="w-full py-3 bg-black text-white hover:bg-gray-800"
-            >
-              {loading ? 'Yuklanmoqda...' : 'Kirish'}
-            </Button>
-
-          
-            
+        <div className="space-y-6">
+          {/* Телефон */}
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Telefon raqam
+            </label>
+            <Input
+              id="phone"
+              type="text"
+              value={phone}
+              onChange={handlePhoneChange}
+              onKeyPress={handleKeyPress}
+              placeholder="+998 XX XXX XX XX"
+              className="bg-white text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              maxLength={13} 
+              crossOrigin={undefined}
+            />
           </div>
+
+          {/* Пароль */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              Parol
+            </label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Parolni kiriting"
+              className="bg-white text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              crossOrigin={undefined}
+            />
+          </div>
+
+          {/* Кнопка */}
+          <Button
+            onClick={handleLogin}
+            disabled={loading}
+            ripple={true}
+            className="w-full bg-black text-white hover:bg-gray-800 font-medium py-3 rounded-md transition duration-200"
+          >
+            {loading ? 'Yuklanmoqda...' : 'Kirish'}
+          </Button>
+        </div>
+
+        <div className="text-center text-xs text-gray-400 mt-6">
+          &copy; {new Date().getFullYear()} SysName. Barcha huquqlar himoyalangan.
         </div>
       </div>
     </div>

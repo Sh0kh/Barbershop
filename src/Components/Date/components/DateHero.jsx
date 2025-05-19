@@ -1,45 +1,113 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useParams } from 'react-router-dom';
 import LogoUse from '../../LogoUsing';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
+import ReactLoading from 'react-loading';
+
 
 export default function DateHero() {
   const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(4); // May = 4
-  const [selectedDay, setSelectedDay] = useState(null);
+  const today = new Date();
+  const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Current month
+  const [currentYear, setCurrentYear] = useState(today.getFullYear()); // Current year
+  const [selectedDate, setSelectedDate] = useState(today); // Default to today
   const [selectedTime, setSelectedTime] = useState(null);
   const { t, i18n } = useTranslation();
+  const { barberId, selectedServices } = useParams();
+  const [barberData, setBarberData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const times = { 
-    [t('day')]: ['10:00', '13:30', '15:00', '16:30'],
-    [t('evning')]: ['18:00', '18:30', '19:00']
+  // Parse selected services from URL
+  const servicesArray = selectedServices ? selectedServices.split(',').map(id => parseInt(id, 10)) : [];
+
+  const getBarberTime = async () => {
+    if (!selectedDate) return;
+    setLoading(true);
+    try {
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      const response = await axios.get(`/date/${barberId}?date=${formattedDate}`);
+      setBarberData(response.data);
+      // Reset selected time when date changes
+      setSelectedTime(null);
+    } catch (error) {
+      console.log(error);
+      setBarberData({ barber_name: "", available_times: [] });
+    } finally {
+      setLoading(false);
+    }
   };
-  
+
+  useEffect(() => {
+    if (selectedDate) {
+      getBarberTime();
+    }
+  }, [selectedDate, barberId]);
+
+  // Group available times into morning, day, and evening
+  const groupTimesByPeriod = (times) => {
+    if (!times || times.length === 0) return {};
+
+    const grouped = {
+      [t('morning')]: [],  // до 12:00
+      [t('day')]: [],     // 12:00 - 17:00
+      [t('evning')]: []   // после 17:00
+    };
+
+    times.forEach(time => {
+      const hour = parseInt(time.split(':')[0], 10);
+
+      if (hour < 12) {
+        grouped[t('morning')].push(time);
+      } else if (hour >= 12 && hour < 17) {
+        grouped[t('day')].push(time);
+      } else {
+        grouped[t('evning')].push(time);
+      }
+    });
+
+    // Remove empty periods
+    Object.keys(grouped).forEach(key => {
+      if (grouped[key].length === 0) {
+        delete grouped[key];
+      }
+    });
+
+    return grouped;
+  };
 
   const handlePrevMonth = () => {
-    setCurrentMonthIndex(prev => (prev === 0 ? 11 : prev - 1));
+    setCurrentMonthIndex(prev => {
+      if (prev === 0) {
+        setCurrentYear(currentYear - 1);
+        return 11;
+      }
+      return prev - 1;
+    });
   };
 
   const handleNextMonth = () => {
-    setCurrentMonthIndex(prev => (prev === 11 ? 0 : prev + 1));
+    setCurrentMonthIndex(prev => {
+      if (prev === 11) {
+        setCurrentYear(currentYear + 1);
+        return 0;
+      }
+      return prev + 1;
+    });
   };
 
   const generateCalendarDays = () => {
-    const year = 2025;
-    const daysInMonth = new Date(year, currentMonthIndex + 1, 0).getDate();
-    const firstDayOfWeek = new Date(year, currentMonthIndex, 1).getDay();
-
+    const daysInMonth = new Date(currentYear, currentMonthIndex + 1, 0).getDate();
+    const firstDayOfWeek = new Date(currentYear, currentMonthIndex, 1).getDay();
 
     const firstDayIndex = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
 
     let days = [];
 
-
-    const prevMonthDays = new Date(year, currentMonthIndex, 0).getDate();
+    const prevMonthDays = new Date(currentYear, currentMonthIndex, 0).getDate();
     for (let i = firstDayIndex - 1; i >= 0; i--) {
       days.push({ day: prevMonthDays - i, currentMonth: false });
     }
-
 
     for (let i = 1; i <= daysInMonth; i++) {
       days.push({ day: i, currentMonth: true });
@@ -53,13 +121,55 @@ export default function DateHero() {
     return days;
   };
 
+  const handleDateSelect = (day) => {
+    const newDate = new Date(currentYear, currentMonthIndex, day);
+    setSelectedDate(newDate);
+  };
+
   const calendarDays = generateCalendarDays();
 
+  // Create a path with date and time as query parameters
+  const getRecordPath = () => {
+    if (!selectedDate) return "/record";
+
+    // Format date as YYYY-MM-DD for URL
+    const formattedDate = selectedDate.toISOString().split('T')[0];
+    const servicesParam = servicesArray.length > 0 ? `/${servicesArray.join(',')}` : '';
+    
+    // Base path without query parameters
+    let path = `/record/${barberId}${servicesParam}`;
+    
+    // Add date as query parameter
+    path += `?date=${formattedDate}`;
+    
+    // Add time as query parameter if selected
+    if (selectedTime) {
+      path += `&time=${selectedTime}`;
+    }
+    
+    return path;
+  };
+
+  // Check if current day in calendar is selected
+  const isDateSelected = (day) => {
+    if (!selectedDate) return false;
+    return selectedDate.getDate() === day &&
+      selectedDate.getMonth() === currentMonthIndex &&
+      selectedDate.getFullYear() === currentYear;
+  };
+
+  // Get available times grouped by period
+  const availableTimes = barberData?.available_times || [];
+  const groupedTimes = groupTimesByPeriod(availableTimes);
+
+  // Initial load - fetch available times for today
+  useEffect(() => {
+    getBarberTime();
+  }, []);
+
   return (
-    <div className="max-w-[100%] mx-auto p-4 bg-white  pb-24 min-h-screen">
-
+    <div className="max-w-[100%] mx-auto p-4 bg-white pb-24 min-h-screen">
       <LogoUse />
-
 
       <div className="flex items-center justify-between mb-6">
         <button
@@ -77,7 +187,7 @@ export default function DateHero() {
           </svg>
         </button>
 
-        <h2 className="font-medium text-lg">{months[currentMonthIndex]}</h2>
+        <h2 className="font-medium text-lg">{months[currentMonthIndex]} {currentYear}</h2>
 
         <button
           onClick={handleNextMonth}
@@ -111,12 +221,12 @@ export default function DateHero() {
               key={index}
               className={`relative text-center p-2 text-sm rounded-full
                 ${currentMonth ? 'text-black' : 'text-gray-300'} 
-                ${currentMonth && selectedDay === day ? 'bg-black text-white cursor-pointer' : ''}
+                ${currentMonth && isDateSelected(day) ? 'bg-black text-white cursor-pointer' : ''}
                 ${currentMonth ? 'hover: cursor-pointer' : ''}`}
-              onClick={() => currentMonth && setSelectedDay(day)}
+              onClick={() => currentMonth && handleDateSelect(day)}
             >
               {day}
-              {selectedDay === day && currentMonth && (
+              {isDateSelected(day) && currentMonth && (
                 <span className="absolute inset-0 border-2 border-black rounded-full"></span>
               )}
             </div>
@@ -125,31 +235,55 @@ export default function DateHero() {
       </div>
 
       {/* Time selection */}
-      <div className="space-y-6">
-        {Object.entries(times).map(([category, timeSlots]) => (
-          <div key={category} className="border-none">
-            <h3 className="font-medium text-gray-800 text-base mb-3">{category}</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedTime(time)}
-                  className={`p-3 rounded-lg text-center text-sm transition-colors
-                    ${selectedTime === time ? 'bg-black text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex items-center justify-center">
+          <ReactLoading type="spinningBubbles" color="black" height={80} width={80} />
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {selectedDate && (
+            <>
+              {barberData && availableTimes.length > 0 ? (
+                <>
+                  {Object.entries(groupedTimes).map(([period, times]) => (
+                    <div key={period} className="border-none">
+                      <h3 className="font-medium text-gray-800 text-base mb-3">{period}</h3>
+                      <div className="grid grid-cols-3 gap-2">
+                        {times.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => setSelectedTime(time)}
+                            className={`p-3 rounded-lg text-center text-sm transition-colors
+                              ${selectedTime === time ? 'bg-black text-white' : 'bg-gray-100 hover:bg-gray-200'}`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="bg-gray-100 rounded-lg p-6 inline-block mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 className="font-medium text-lg text-gray-800 mb-2">{t('barber_busy')}</h3>
+                    <p className="text-gray-600">{t('no_available_slots')}</p>
+                    <p className="text-gray-600 mt-2">{t('please_select_another_day')}</p>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
-      {/* Confirm button */}
-      {selectedTime && (
+      {selectedDate && selectedTime && (
         <div className="mt-6 fixed bottom-0 bg-white left-0 right-0 max-w-xl mx-auto p-4 z-50 border-t border-gray-200">
-          <NavLink to="/record" className="block w-full text-center bg-black  text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none">
-         { t('done')}
+          <NavLink to={getRecordPath()} className="block w-full text-center bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors no-underline focus:outline-none">
+            {t('done')}
           </NavLink>
         </div>
       )}

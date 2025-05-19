@@ -100,7 +100,7 @@ export default function MyService() {
                       title="Tahrirlash"
                     >
                       <Edit />
-                    </button>
+                    </button> 
                   </NavLink>
                   <button
                     onClick={() => handleDelete(item.id)}

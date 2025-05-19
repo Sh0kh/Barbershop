@@ -36,7 +36,6 @@ export default function BarberServiceDelete({ isOpen, onClose, id, refresh }) {
     return (
         <Dialog
             open={isOpen}
-
             onClose={onClose}
             PaperProps={{ className: 'bg-white text-black rounded-md shadow-lg' }}
         >

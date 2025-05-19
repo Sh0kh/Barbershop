@@ -3,6 +3,7 @@ import { useState } from "react";
 import { $api } from "../../../utils";
 import Swal from "sweetalert2";
 import ReactLoading from 'react-loading';
+import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
 
@@ -18,6 +19,8 @@ export default function Profile() {
     const [barber, setBarber] = useState([])
     const [infoUz, setinfoUz] = useState('')
     const [infoRu, setinfoRu] = useState('')
+
+    const navigate = useNavigate()
 
     const fetchBarberData = async () => {
         try {
@@ -154,67 +157,80 @@ export default function Profile() {
 
 
     return (
-        <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
-            <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
-                <div className="mb-6 text-center">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Rasm</label>
-                    <div className="relative mx-auto w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition">
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                        />
-                        {imagePreview ? (
-                            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                                <span>+</span>
-                            </div>
-                        )}
+        <>
+
+            <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
+                <div className=" p-4 bg-white rounded-lg shadow mb-[20px]  ">
+                    <div className="flex justify-between items-center ">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                            Ortga
+                        </button>
                     </div>
                 </div>
-                <div className="space-y-4">
-                    <Input label="Ism" value={name} onChange={setName} />
-                    <Input label="Familiya" value={lastname} onChange={setLastname} />
-                    <Input label="Telefon" value={phone} onChange={setPhone} />
-                    <Input label="Yangi parol (ixtiyoriy)" value={password} onChange={setPassword} type="password" />
-                    <Input label="Parolni tasdiqlash" value={passwordConfirmation} onChange={setPasswordConfirmation} type="password" />
-                    <label className="mt-[10px] block" htmlFor="infoUz">
-                        <span>
-                            Info uz
-                        </span>
-                        <textarea
-                            value={infoUz}
-                            onChange={(e) => setinfoUz(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            name="infoUz">
+                <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
+                    <div className="mb-6 text-center">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Rasm</label>
+                        <div className="relative mx-auto w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="absolute inset-0 opacity-0 cursor-pointer"
+                            />
+                            {imagePreview ? (
+                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
+                                    <span>+</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="space-y-4">
+                        <Input label="Ism" value={name} onChange={setName} />
+                        <Input label="Familiya" value={lastname} onChange={setLastname} />
+                        <Input label="Telefon" value={phone} onChange={setPhone} />
+                        <Input label="Yangi parol (ixtiyoriy)" value={password} onChange={setPassword} type="password" />
+                        <Input label="Parolni tasdiqlash" value={passwordConfirmation} onChange={setPasswordConfirmation} type="password" />
+                        <label className="mt-[10px] block" htmlFor="infoUz">
+                            <span>
+                                Info uz
+                            </span>
+                            <textarea
+                                value={infoUz}
+                                onChange={(e) => setinfoUz(e.target.value)}
+                                className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                name="infoUz">
 
-                        </textarea>
-                    </label>
-                    <label className="mt-[10px] block" htmlFor="infoUz">
-                        <span>
-                            Info ru
-                        </span>
-                        <textarea
-                            value={infoRu}
-                            onChange={(e) => setinfoRu(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                            name="infoUz">
+                            </textarea>
+                        </label>
+                        <label className="mt-[10px] block" htmlFor="infoUz">
+                            <span>
+                                Info ru
+                            </span>
+                            <textarea
+                                value={infoRu}
+                                onChange={(e) => setinfoRu(e.target.value)}
+                                className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                name="infoUz">
 
-                        </textarea>
-                    </label>
-                    <button
-                        disabled={loading}
-                        onClick={handleUpdate}
-                        className={`w-full py-3 rounded-lg font-semibold text-white transition ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-gray-800"
-                            }`}
-                    >
-                        {loading ? "Yangilanmoqda..." : "Tahrirlashni saqlash"}
-                    </button>
+                            </textarea>
+                        </label>
+                        <button
+                            disabled={loading}
+                            onClick={handleUpdate}
+                            className={`w-full py-3 rounded-lg font-semibold text-white transition ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-gray-800"
+                                }`}
+                        >
+                            {loading ? "Yangilanmoqda..." : "Tahrirlashni saqlash"}
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

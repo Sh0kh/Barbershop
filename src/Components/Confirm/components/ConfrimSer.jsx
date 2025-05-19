@@ -1,25 +1,28 @@
 import { useTranslation } from 'react-i18next';
+import { NavLink } from 'react-router-dom';
 
 export default function ConfirmSer() {
     const { t, i18n } = useTranslation();
 
     return (
         <div className="con_wrapper flex items-center justify-center gap-[30px] p-4">
-            <div className="dark_con">
-                <div className="w-[48px] h-[48px] bg-black text-white">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                    >
-                        <path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z" />
-                    </svg>
+            <NavLink to={'/'}>
+                <div className="dark_con">
+                    <div className="w-[48px] h-[48px] bg-black text-white">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                        >
+                            <path fill="currentColor" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z" />
+                        </svg>
+                    </div>
+                    <span>{t('more')}</span>
                 </div>
-                <span>{t('more')}</span>
-            </div>
+            </NavLink>
 
-            <div className="ff_con">
+            {/* <div className="ff_con">
                 <div className="w-[48px] h-[48px] text-black">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +81,7 @@ export default function ConfirmSer() {
                     </svg>
                 </div>
                 <span>   {t('non')}</span>
-            </div>
+            </div> */}
         </div>
     );
 }
