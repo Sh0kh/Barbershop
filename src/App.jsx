@@ -23,6 +23,8 @@ import BarberServiceCreate from "./Components/BarberService/BarberServiceCreate"
 import BarberServiceEdit from "./Components/BarberService/BarberServiceEdit";
 import BarberWorkTime from "./Components/BarberWorkTime/BarberWorkTime";
 import BarberDayOff from "./Components/BarberDayOff/BarberDayOff";
+import BarberComment from "./Components/BarberComment/BarberComment";
+import OrderCreate from "./Components/Dashboard/components/Orders/OrderCreate";
 
 function App() {
   return (
@@ -35,11 +37,12 @@ function App() {
           <Route
             element={
               <ProtectedRoute>
-              <AdminLayout />
-               </ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
             }
           >
             <Route path="admin/dashboard" element={<Dashboard />} />
+            <Route path="admin/bron/create" element={<OrderCreate />} />
             <Route path="admin/barbers" element={<Barbers />} />
             <Route path="admin/barbers/edit" element={<BarbersEdit />} />
             <Route path="admin/barbers/create" element={<BarbersCreate />} />
@@ -49,10 +52,11 @@ function App() {
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/service/:barberId" element={<Service />} />
-            <Route path="/date" element={<Date />} />
-            <Route path="/record" element={<Record />} />
+            <Route path="/barber/comment/:ID" element={<BarberComment />} />
+            <Route path="/date/:barberId/:selectedServices" element={<Date />} />
+            <Route path="/record/:barberId/:selectedServices" element={<Record />} />
             <Route path="/barberinfo/:ID" element={<Barber />} />
-            <Route path="/confirm" element={<Confrim />} />
+            <Route path="/confirm/:barberId/:selectedServices/:date/:time" element={<Confrim />} />
           </Route>
         </Route>
 

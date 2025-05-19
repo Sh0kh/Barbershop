@@ -10,44 +10,66 @@ export default function BarbersOne() {
   const [selectedSpecialist, setSelectedSpecialist] = useState(null);
   const [showServiceButton, setShowServiceButton] = useState(false);
   const { t, i18n } = useTranslation();
-  const [barberId, setBarberId] = useState(null)
-  const [data, setData] = useState([])
-  const [loading, setLoadin] = useState(true)
+  const [barberId, setBarberId] = useState(null);
+  const [data, setData] = useState([]);
+  const [loading, setLoadin] = useState(true);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
+  const handleSelectTime = (time, barberId, barber) => {
+    // Получение завтрашней даты
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const handleSelectTime = (time, barberId) => {
+    // Преобразуем время (например, "14:00") в объект Date
+    const [hours, minutes] = time.split(':').map(Number);
+    tomorrow.setHours(hours, minutes, 0, 0);
+
+    // Форматируем дату в формат YYYY-MM-DD
+    const formattedDate = tomorrow.toISOString().split('T')[0];
+
     setSelectedTime({ time, barberId });
+    setSelectedDate(formattedDate);
+
+    // Автоматически выбираем барбера при выборе времени
+    setSelectedSpecialist(barber);
+    setShowServiceButton(true);
+    setBarberId(barber?.id);
   };
 
-
   const getAllBarbers = async () => {
-    setLoadin(true)
+    setLoadin(true);
     try {
-      const response = await axios.get(`/barberss`)
-      setData(response?.data?.data)
+      const response = await axios.get(`/barberss`);
+      setData(response?.data?.data);
     } catch (error) {
-      console.log(error)
-      console.log(error.response?.data)
+      console.log(error);
+      console.log(error.response?.data);
     } finally {
-      setLoadin(false)
+      setLoadin(false);
     }
-  }
+  };
 
   useEffect(() => {
-    getAllBarbers()
-  }, [])
-
-
+    getAllBarbers();
+  }, []);
 
   const handleSelectSpecialist = (barber) => {
     setSelectedSpecialist(barber);
     setShowServiceButton(true);
-    setBarberId(barber?.id)
+    setBarberId(barber?.id);
   };
 
-
-
+  // Функция для формирования пути навигации
+  const getServicePath = () => {
+    if (selectedTime && selectedDate) {
+      // Если выбрано время и у нас есть дата, добавляем дату и время в путь
+      return `/service/${barberId}?date=${selectedDate}&time=${selectedTime.time}`;
+    } else {
+      // Если выбран только барбер без времени
+      return `/service/${barberId}`;
+    }
+  };
 
   return (
     <>
@@ -69,7 +91,6 @@ export default function BarbersOne() {
           ) : data?.length <= 0 ? (
             <div className="flex flex-col items-center justify-center h-[400px] text-center px-4">
               <div className="text-gray-400 mb-4">
-                {/* Иконка "документ/файл" из Heroicons или подобных библиотек */}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
@@ -78,17 +99,16 @@ export default function BarbersOne() {
               </div>
               <h3 className="text-lg font-medium text-gray-700 mb-2"> Ma'lumot topilmadi</h3>
               <p className="text-sm text-gray-500 max-w-xs">
-                Hozircha hali ma'lumot yo‘q, iltimos, keyinroq urinib korishni so‘raymiz.
+                Hozircha hali ma'lumot yo'q, iltimos, keyinroq urinib korishni so'raymiz.
               </p>
             </div>
           ) : (
             data?.map((barber) => (
               <div
-
                 key={barber.id}
                 className={`p-4 rounded-lg shadow-sm transition-all cursor-pointer ${selectedSpecialist?.id === barber.id
-                  ? 'border border-black'
-                  : 'border border-gray-200 hover:border-gray-300'
+                    ? 'border border-black'
+                    : 'border border-gray-200 hover:border-gray-300'
                   }`}
                 onClick={() => handleSelectSpecialist(barber)}
               >
@@ -110,8 +130,6 @@ export default function BarbersOne() {
                         <Star className="fill-yellow-400 text-yellow-400" size={16} />
                         <Star className="fill-yellow-400 text-yellow-400" size={16} />
                         <Star className="fill-yellow-400 text-yellow-400 mr-[10px]" size={16} />
-
-                        {/* <span className="rating_span ml-1 font-medium">{barber.rating.toFixed(1)}</span> */}
                         <span className="rating_span text-gray-500 ml-2 text-sm">{barber.review_count} {t('otziv')}</span>
                       </div>
                     </div>
@@ -137,7 +155,7 @@ export default function BarbersOne() {
                       const times = barber?.available_times_tomorrow || [];
                       const middleIndex = Math.floor(times.length / 2);
                       const start = Math.max(0, middleIndex - 2);
-                      const selectedTimes = times.slice(start, start + 5);
+                      const selectedTimes = times.slice(start, start + 4);
 
                       return selectedTimes.map((time, index) => (
                         <button
@@ -148,7 +166,7 @@ export default function BarbersOne() {
                             }`}
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleSelectTime(time, barber.id);
+                            handleSelectTime(time, barber.id, barber);
                           }}
                         >
                           {` ${time}`}
@@ -165,7 +183,7 @@ export default function BarbersOne() {
       {showServiceButton && (
         <div className="fixed bottom-0 left-0 right-0 max-w-xl mx-auto p-4 z-50 border-gray-200">
           <NavLink
-            to={`/service/${barberId}`}
+            to={getServicePath()}
             className="w-full block bg-black text-white py-3 rounded-xl font-bold text-lg hover:bg-gray-800 transition-colors text-center"
           >
             {t('service')}
@@ -173,5 +191,5 @@ export default function BarbersOne() {
         </div>
       )}
     </>
-  )
+  );
 }

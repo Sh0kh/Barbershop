@@ -1,6 +1,18 @@
-import { useState, useEffect } from "react";
-import Swal from "sweetalert2";
+import { useState, useEffect, Fragment } from "react";
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Input,
+  Typography,
+  IconButton,
+} from "@material-tailwind/react";
 import { $api } from "../../../../utils";
+import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import Swal from "sweetalert2";
+
 
 export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
   const [username, setUsername] = useState("");
@@ -12,7 +24,9 @@ export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
+  // Initialize form data when barber changes
   useEffect(() => {
     if (barber) {
       setUsername(barber.username || "");
@@ -22,6 +36,26 @@ export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
       setImagePreview(barber.image || "https://i.pravatar.cc/150?img=1");
     }
   }, [barber]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
+  const handlePhoneChange = (e) => {
+    let value = e.target.value;
+
+    if (!value.startsWith("+998")) {
+      value = "+998";
+    }
+
+    const phoneNumber = value.replace(/[^\d]/g, "").slice(3);
+    if (phoneNumber.length <= 9) {
+      setPhone("+998" + phoneNumber);
+    }
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -36,16 +70,32 @@ export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
     }
   };
 
-  const handleUpdate = async () => {
-    if (!username || !name || !lastname || !phone) {
-      Swal.fire("Xato!", "Barcha majburiy maydonlar to‘ldirilishi kerak.", "error");
-      return;
+  const resetForm = () => {
+    setPassword("");
+    setPasswordConfirmation("");
+    setImage(null);
+    setErrors({});
+  };
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!username) newErrors.username = "Username talab qilinadi";
+    if (!name) newErrors.name = "Ism talab qilinadi";
+    if (!lastname) newErrors.lastname = "Familiya talab qilinadi";
+    if (!phone || phone.length < 13) newErrors.phone = "To'liq telefon raqam talab qilinadi";
+
+    // Password validation only if a new password is being set
+    if (password && password !== passwordConfirmation) {
+      newErrors.passwordConfirmation = "Parollar mos kelmadi";
     }
 
-    if (password && password !== passwordConfirmation) {
-      Swal.fire("Xato!", "Parollar mos kelmayapti.", "error");
-      return;
-    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleUpdate = async () => {
+    if (!validate()) return;
 
     setLoading(true);
     try {
@@ -54,10 +104,12 @@ export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
       formData.append("name", name);
       formData.append("lastname", lastname);
       formData.append("phone", phone);
+
       if (password) {
         formData.append("password", password);
         formData.append("password_confirmation", passwordConfirmation);
       }
+
       if (image) {
         formData.append("image", image);
       }
@@ -68,101 +120,198 @@ export default function BarbersEdit({ isOpen, onClose, refresh, barber }) {
         }
       });
 
-      Swal.fire({
-        title: "Yangilandi!",
-        icon: "success",
+      // Success notification
+      const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
+        showConfirmButton: false,
         timer: 3000,
-        showConfirmButton: false
+        timerProgressBar: true,
+        customClass: {
+          container: 'swal2-container-higher-zindex'
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Muvaffaqiyatli yangilandi!"
+
       });
 
       refresh();
       onClose();
       resetForm();
     } catch (error) {
-      Swal.fire({
-        title: "Xato!",
-        text: error.response?.data?.message || "Xatolik yuz berdi.",
-        icon: "error",
+      // Error handling
+      const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
+        showConfirmButton: false,
         timer: 3000,
-        showConfirmButton: false
+        timerProgressBar: true,
+        customClass: {
+          container: 'swal2-container-higher-zindex'
+        },
       });
+
+      Toast.fire({
+        icon: "error",
+        title: error.response?.data?.message || "Xatolik yuz berdi"
+      });
+
     } finally {
       setLoading(false);
     }
   };
 
-  const resetForm = () => {
-    setPassword("");
-    setPasswordConfirmation("");
-    setImage(null);
-  };
-
-  if (!isOpen || !barber) return null;
+  if (!barber) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-bold">Sartaroshni tahrirlash</h1>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">❌</button>
-        </div>
+    <Fragment>
+      <Dialog
+        style={{ zIndex: 9000 }}
+        size="sm" open={isOpen} handler={onClose}>
+        <DialogHeader className="flex items-center justify-between">
+          <Typography variant="h5" className="font-bold">
+            Barber tahrirlash
+          </Typography>
+          <IconButton
+            variant="text"
+            color="blue-gray"
+            onClick={onClose}
+          >
+            <XMarkIcon className="h-5 w-5" />
+          </IconButton>
+        </DialogHeader>
 
-        <div className="mb-6 text-center">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Rasm</label>
-          <div className="relative mx-auto w-24 h-24 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-            />
-            {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
-                <span>+</span>
+        <DialogBody className="overflow-y-auto">
+          <div className="mb-6 flex flex-col items-center">
+            <Typography variant="small" color="blue-gray" className="mb-2 font-medium">
+              Barber rasmi
+            </Typography>
+
+            <div className="relative mx-auto w-24 h-24 group">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="absolute inset-0 opacity-0 z-10 cursor-pointer"
+              />
+              <div className={`
+                w-24 h-24 rounded-full overflow-hidden border-2 
+                ${imagePreview ? "border-blue-500" : "border-blue-gray-200"}
+                group-hover:border-blue-500 transition-colors duration-300
+              `}>
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-blue-gray-50 text-blue-gray-400">
+                    <PhotoIcon className="h-10 w-10" />
+                  </div>
+                )}
               </div>
+            </div>
+          </div>
+
+          <div className="grid gap-6">
+            <Input
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              error={!!errors.username}
+              variant="outlined"
+              color="blue"
+            />
+            {errors.username && (
+              <Typography variant="small" color="red" className="-mt-4">
+                {errors.username}
+              </Typography>
+            )}
+
+            <Input
+              label="Ism"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              error={!!errors.name}
+              variant="outlined"
+              color="blue"
+            />
+            {errors.name && (
+              <Typography variant="small" color="red" className="-mt-4">
+                {errors.name}
+              </Typography>
+            )}
+
+            <Input
+              label="Familiya"
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+              error={!!errors.lastname}
+              variant="outlined"
+              color="blue"
+            />
+            {errors.lastname && (
+              <Typography variant="small" color="red" className="-mt-4">
+                {errors.lastname}
+              </Typography>
+            )}
+
+            <Input
+              label="Telefon"
+              value={phone}
+              onChange={handlePhoneChange}
+              error={!!errors.phone}
+              variant="outlined"
+              color="blue"
+              maxLength={13}
+            />
+            {errors.phone && (
+              <Typography variant="small" color="red" className="-mt-4">
+                {errors.phone}
+              </Typography>
+            )}
+
+            <Input
+              type="password"
+              label="Yangi parol (ixtiyoriy)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              variant="outlined"
+              color="blue"
+            />
+
+            <Input
+              type="password"
+              label="Parolni tasdiqlash"
+              value={passwordConfirmation}
+              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              error={!!errors.passwordConfirmation}
+              variant="outlined"
+              color="blue"
+            />
+            {errors.passwordConfirmation && (
+              <Typography variant="small" color="red" className="-mt-4">
+                {errors.passwordConfirmation}
+              </Typography>
             )}
           </div>
-        </div>
+        </DialogBody>
 
-        <div className="space-y-4">
-          <Input label="Username" value={username} onChange={setUsername} />
-          <Input label="Ism" value={name} onChange={setName} />
-          <Input label="Familiya" value={lastname} onChange={setLastname} />
-          <Input label="Telefon" value={phone} onChange={setPhone} />
-          <Input label="Yangi parol (ixtiyoriy)" value={password} onChange={setPassword} type="password" />
-          <Input label="Parolni tasdiqlash" value={passwordConfirmation} onChange={setPasswordConfirmation} type="password" />
-
-          <button
+        <DialogFooter className="pt-2">
+          <Button
+            fullWidth
             disabled={loading}
             onClick={handleUpdate}
-            className={`w-full py-3 rounded-lg font-semibold text-white transition ${
-              loading ? "bg-gray-400 cursor-not-allowed" : "bg-black hover:bg-gray-800"
-            }`}
+            className=" normal-case text-base"
           >
             {loading ? "Yangilanmoqda..." : "Tahrirlashni saqlash"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Input({ label, value, onChange, type = "text" }) {
-  return (
-    <div>
-      <label className="block text-sm text-gray-700">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-      />
-    </div>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </Fragment>
   );
 }

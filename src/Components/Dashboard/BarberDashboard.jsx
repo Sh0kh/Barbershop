@@ -21,6 +21,7 @@ export default function BarberDashboard() {
         phone: "",
         role: ""
     });
+    const [bronData, setBronData] = useState([])
     const [loading, setLoading] = useState(true);
 
     const fetchBarberData = async () => {
@@ -35,8 +36,18 @@ export default function BarberDashboard() {
         }
     };
 
+    const getBron = async () => {
+        try {
+            const response = await $api.get('/barber/notifications')
+            setBronData(response?.data?.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         fetchBarberData();
+        getBron()
     }, []);
 
     const handleLogout = () => {
@@ -44,6 +55,17 @@ export default function BarberDashboard() {
         sessionStorage.removeItem('token');
         navigate('/login');
     };
+
+    const today = new Date();
+    const todayBookingsCount = bronData.filter(i => {
+        const bookingDate = new Date(i?.data?.booking_time);
+        return (
+            bookingDate.getFullYear() === today.getFullYear() &&
+            bookingDate.getMonth() === today.getMonth() &&
+            bookingDate.getDate() === today.getDate()
+        );
+    }).length;
+
 
     if (loading) {
         return (
@@ -107,7 +129,7 @@ export default function BarberDashboard() {
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="text-sm text-gray-500">Bugungi</p>
-                            <p className="text-xl font-bold">4</p>
+                            <p className="text-xl font-bold">{todayBookingsCount}</p>
                         </div>
                         <Clock className="text-blue-500" size={24} />
                     </div>
@@ -116,7 +138,7 @@ export default function BarberDashboard() {
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="text-sm text-gray-500">Jami</p>
-                            <p className="text-xl font-bold">24</p>
+                            <p className="text-xl font-bold">{bronData?.length}</p>
                         </div>
                         <Scissors className="text-blue-500" size={24} />
                     </div>
@@ -124,26 +146,28 @@ export default function BarberDashboard() {
             </div>
 
             <div className="bg-white p-4 rounded-lg shadow">
-                <h2 className="text-lg font-semibold mb-3">Bugungi jadval</h2>
+                <h2 className="text-lg font-semibold mb-3">Jadval</h2>
                 <div className="space-y-3">
-                    <div className="border rounded-lg p-3 flex items-center justify-between">
-                        <div>
-                            <p className="font-medium">Jasur Aliyev</p>
-                            <p className="text-sm text-gray-500">Klassik soch kesish</p>
+                    {bronData?.map((i, index) => (
+                        <div key={index} className="border rounded-lg p-3 flex items-center justify-between">
+                            <div>
+                                <p className="font-medium">{i?.data?.user_name}</p>
+                                <p className="font-medium my-[2px]">{i?.data?.user_phone}</p>
+                                <p className="text-sm text-gray-500">Klassik soch kesish</p>
+                            </div>
+                            <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+                                {i?.data?.booking_time && (() => {
+                                    const date = new Date(i.data.booking_time);
+                                    const day = date.getDate();
+                                    const month = date.toLocaleString('en-US', { month: 'short' }).toLowerCase(); // 'May' -> 'may'
+                                    const hours = String(date.getHours()).padStart(2, '0');
+                                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                                    return `${day} ${month} ${hours}:${minutes}`;
+                                })()}
+                            </span>
+
                         </div>
-                        <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
-                            14:30
-                        </span>
-                    </div>
-                    <div className="border rounded-lg p-3 flex items-center justify-between">
-                        <div>
-                            <p className="font-medium">Dilshod Raxmonov</p>
-                            <p className="text-sm text-gray-500">Soqol olish</p>
-                        </div>
-                        <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
-                            16:00
-                        </span>
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>

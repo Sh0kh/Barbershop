@@ -21,6 +21,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "aos": "^2.3.4",
     "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
     "gsap": "^3.12.7",
     "gsap-trial": "^3.12.5",
     "i18next": "^24.2.1",
@@ -35,7 +36,7 @@
     "react-loading": "^2.0.3",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.28.0",
-    "react-select": "^5.8.3",
+    "react-select": "^5.10.1",
     "react-sweetalert2": "^0.6.0",
     "styled-components": "^6.1.17"
   },

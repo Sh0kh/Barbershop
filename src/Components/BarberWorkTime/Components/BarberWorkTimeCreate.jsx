@@ -78,7 +78,7 @@ export default function BarberWorkTimeCreate({refresh}) {
             </Button>
 
             <Dialog
-                style={{ zIndex: 9000 }} // Добавьте это
+                style={{ zIndex: 9000 }} 
                 open={open} size="xl" handler={() => setOpen(false)} >
                 <DialogHeader>Ish vaqti</DialogHeader>
                 <DialogBody divider className="grid gap-4">
