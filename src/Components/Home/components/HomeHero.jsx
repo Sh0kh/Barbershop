@@ -1,18 +1,33 @@
 import { ChevronRight, Globe } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useRef, useEffect } from 'react'; // Add these imports
 import logo from '../../UI/Icons/photo_2025-05-02_21-23-30.jpg';
 import BarbersOne from './BarbersOne';
 import Foto from '../../UI/Icons/kov00774-scaled.jpg'
 
 export default function HomeHero() {
   const { t, i18n } = useTranslation();
+  const imageRef = useRef(null); // Create a ref for the image
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (imageRef.current) {
+        const scrollPosition = window.pageYOffset;
+        imageRef.current.style.transform = `translateY(${scrollPosition * 0.3}px) scale(${1 + scrollPosition * 0.0005})`;
+        imageRef.current.style.opacity = `${1 - scrollPosition * 0.002}`;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="bg-gray-50 text-black w-full mx-auto max-w-xl relative">
+    <div className="bg-gray-50 text-black w-full mx-auto max-w-xl relative overflow-hidden">
 
       <div className="absolute top-4 right-4 z-30">
         <div className="flex items-center bg-black bg-opacity-70 text-white rounded-full shadow-lg overflow-hidden">
@@ -36,14 +51,15 @@ export default function HomeHero() {
         </div>
       </div>
 
-      <div className="relative w-full h-70 bg-black">
+      <div className="relative w-full h-70 bg-black overflow-hidden">
         <img
+          ref={imageRef} // Attach the ref here
           src={Foto}
           alt="23:59 Barbershop staff"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-transform duration-300 ease-out will-change-transform"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-50"></div>
-        <div className="absolute bottom-0 left-6 transform translate-y-1/2 z-20">
+        <div className="absolute bottom-[-23px] left-6 z-[99999999] ">
           <div className="bg-black mb-[25px] shadow-xl rounded-full p-[2px] w-[70px] h-[70px] flex items-center justify-center">
             <img src={logo} alt="23:59 Logo" className="w-full h-full rounded-full" />
           </div>
