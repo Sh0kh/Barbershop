@@ -3,12 +3,6 @@ import { NavLink, useParams } from 'react-router-dom';
 
 export default function Comment({ data }) {
   const { ID } = useParams()
-  const reviews = [
-    { initial: "Р", name: "Рустам", rating: 5, date: "2 мая 2025", thumbsUp: true },
-    { initial: "С", name: "Саида", rating: 5, date: "30 апреля 2025", thumbsUp: false },
-    { initial: "Х", name: "Хумоён", rating: 5, date: "30 апреля 2025", thumbsUp: false },
-    { initial: "Ш", name: "Шавкат", rating: 5, date: "29 апреля 2025", thumbsUp: false },
-  ];
   const { t, i18n } = useTranslation();
 
   return (

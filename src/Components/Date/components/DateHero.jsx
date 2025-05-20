@@ -7,7 +7,7 @@ import ReactLoading from 'react-loading';
 
 
 export default function DateHero() {
-  const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
   const today = new Date();
   const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Current month
   const [currentYear, setCurrentYear] = useState(today.getFullYear()); // Current year
@@ -20,6 +20,11 @@ export default function DateHero() {
 
   // Parse selected services from URL
   const servicesArray = selectedServices ? selectedServices.split(',').map(id => parseInt(id, 10)) : [];
+
+
+  const months = i18n.language === 'ru'
+    ? ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+    : ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
 
   const getBarberTime = async () => {
     if (!selectedDate) return;
@@ -135,22 +140,21 @@ export default function DateHero() {
     // Format date as YYYY-MM-DD for URL
     const formattedDate = selectedDate.toISOString().split('T')[0];
     const servicesParam = servicesArray.length > 0 ? `/${servicesArray.join(',')}` : '';
-    
+
     // Base path without query parameters
     let path = `/record/${barberId}${servicesParam}`;
-    
+
     // Add date as query parameter
     path += `?date=${formattedDate}`;
-    
+
     // Add time as query parameter if selected
     if (selectedTime) {
       path += `&time=${selectedTime}`;
     }
-    
+
     return path;
   };
 
-  // Check if current day in calendar is selected
   const isDateSelected = (day) => {
     if (!selectedDate) return false;
     return selectedDate.getDate() === day &&
@@ -158,11 +162,9 @@ export default function DateHero() {
       selectedDate.getFullYear() === currentYear;
   };
 
-  // Get available times grouped by period
   const availableTimes = barberData?.available_times || [];
   const groupedTimes = groupTimesByPeriod(availableTimes);
 
-  // Initial load - fetch available times for today
   useEffect(() => {
     getBarberTime();
   }, []);
@@ -209,9 +211,14 @@ export default function DateHero() {
       <div className="mb-8">
         {/* Weekday headers */}
         <div className="grid grid-cols-7 gap-1 mb-3">
-          {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((day) => (
+          {(
+            i18n.language === 'ru'
+              ? ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+              : ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
+          ).map((day) => (
             <div key={day} className="text-center text-gray-500 font-medium text-sm">{day}</div>
           ))}
+
         </div>
 
         {/* Calendar days */}
@@ -234,7 +241,6 @@ export default function DateHero() {
         </div>
       </div>
 
-      {/* Time selection */}
       {loading ? (
         <div className="flex items-center justify-center">
           <ReactLoading type="spinningBubbles" color="black" height={80} width={80} />
@@ -270,7 +276,6 @@ export default function DateHero() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <h3 className="font-medium text-lg text-gray-800 mb-2">{t('barber_busy')}</h3>
-                    <p className="text-gray-600">{t('no_available_slots')}</p>
                     <p className="text-gray-600 mt-2">{t('please_select_another_day')}</p>
                   </div>
                 </div>

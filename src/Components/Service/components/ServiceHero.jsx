@@ -7,41 +7,46 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import ReactLoading from 'react-loading';
 
-
 export default function ServiceHero() {
   const { t, i18n } = useTranslation();
-  const { barberId } = useParams()
-  const [serviceData, setServiceData] = useState([])
-  const [loading, setLoading] = useState()
+  const { barberId } = useParams();
+  const [serviceData, setServiceData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const getService = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await axios.get(`/service?user_id=${barberId}`)
-      setServiceData(response?.data?.data)
+      const response = await axios.get(`/service?user_id=${barberId}`);
+      setServiceData(response?.data?.data || []);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
+  };
 
   useEffect(() => {
-    getService()
-  }, [])
+    getService();
+  }, []);
+
+  const currentLang = i18n.language; // 'uz' или 'ru'
+  const nameField = currentLang === 'ru' ? 'name_ru' : 'name_uz';
+
+  const filteredData = serviceData.filter((item) =>
+    item[nameField]?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="max-w-[100%] min-h-screen pb-24 mx-auto p-4 bg-white">
       <LogoUse />
-
-      <h2 className="text-xl font-bold mb-4"> {t('service')}</h2>
+      <h2 className="text-xl font-bold mb-4">{t('service')}</h2>
 
       {loading ? (
         <div className="flex items-center justify-center h-[500px]">
           <ReactLoading type="spinningBubbles" color="black" height={80} width={80} />
         </div>
-      ) : serviceData?.length <= 0 ? (
+      ) : serviceData.length <= 0 ? (
         <div className="flex flex-col items-center justify-center h-[500px] text-center px-4">
           <div className="text-gray-400 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,29 +55,28 @@ export default function ServiceHero() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-700 mb-2"> Ma'lumot topilmadi</h3>
+          <h3 className="text-lg font-medium text-gray-700 mb-2">Ma'lumot topilmadi</h3>
           <p className="text-sm text-gray-500 max-w-xs">
-            Hozircha hali ma'lumot yo‘q, iltimos, keyinroq urinib korishni so‘raymiz.
+            Hozircha hali ma'lumot yo‘q, iltimos, keyinroq urinib ko‘rishni so‘raymiz.
           </p>
         </div>
       ) : (
         <>
-          <div className="relative mb-6">
+          <div className="relative mb-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="text-gray-400" size={18} />
             </div>
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-              placeholder="Topish"
+              placeholder={t('search') || 'Topish'}
             />
-          </div >
-          <ServiceOne data={serviceData} />
+          </div>
+          <ServiceOne data={filteredData} />
         </>
-      )
-      }
-
-
-    </div >
+      )}
+    </div>
   );
 }

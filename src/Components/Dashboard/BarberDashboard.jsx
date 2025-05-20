@@ -5,12 +5,18 @@ import { useState } from "react";
 import { useEffect } from "react";
 import ReactLoading from 'react-loading';
 import { $api } from "../../utils";
+import { Comment } from "@mui/icons-material";
+import Delete from "../UI/Icons/Delete";
+import Eye from "../UI/Icons/Eye";
+import BarberOrderDelete from "./BarberOrderDelete";
 
 
 
 
 export default function BarberDashboard() {
     const navigate = useNavigate();
+    const [deleteModal, setDeleteModal] = useState()
+    const [deleteId, setDeleteId] = useState()
 
     const [barber, setBarber] = useState({
         id: null,
@@ -115,13 +121,23 @@ export default function BarberDashboard() {
                         <span className="mt-1 text-sm">Ish vaqti</span>
                     </NavLink>
                 </div>
-                <NavLink
-                    to="/barber/dashboard/dayOff"
-                    className="flex flex-col items-center mt-[10px] p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
-                >
-                    <Calendar size={24} />
-                    <span className="mt-1 text-sm">Dam olish kuni</span>
-                </NavLink>
+                <div className="grid grid-cols-2  gap-3 mt-2">
+                    <NavLink
+                        to="/barber/dashboard/dayOff"
+                        className="flex flex-col items-center  p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
+                    >
+                        <Calendar size={24} />
+                        <span className="mt-1 text-sm">Dam olish kuni</span>
+                    </NavLink>
+                    <NavLink
+                        to="/barber/dashboard/comment"
+                        className="flex flex-col items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 text-blue-700"
+                    >
+                        <Comment size={24} />
+                        <span className="mt-1 text-sm">Commentlar</span>
+                    </NavLink>
+                </div>
+
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-6 mt-6">
@@ -149,27 +165,43 @@ export default function BarberDashboard() {
                 <h2 className="text-lg font-semibold mb-3">Jadval</h2>
                 <div className="space-y-3">
                     {bronData?.map((i, index) => (
-                        <div key={index} className="border rounded-lg p-3 flex items-center justify-between">
-                            <div>
-                                <p className="font-medium">{i?.data?.user_name}</p>
-                                <p className="font-medium my-[2px]">{i?.data?.user_phone}</p>
-                                <p className="text-sm text-gray-500">Klassik soch kesish</p>
+                        <div
+                            key={index}
+                            className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white"
+                        >
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="font-semibold text-lg text-gray-800">{i?.data?.user_name}</p>
+                                    <p className="font-medium text-gray-600 my-1">{i?.data?.user_phone}</p>
+                                    <p className="text-sm text-gray-500">Klassik soch kesish</p>
+                                </div>
+                                <span className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">
+                                    {i?.data?.booking_time && (() => {
+                                        const date = new Date(i.data.booking_time);
+                                        const day = date.getDate();
+                                        const month = date.toLocaleString('en-US', { month: 'short' }).toLowerCase(); // 'May' -> 'may'
+                                        const hours = String(date.getHours()).padStart(2, '0');
+                                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                                        return `${day} ${month} ${hours}:${minutes}`;
+                                    })()}
+                                </span>
                             </div>
-                            <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
-                                {i?.data?.booking_time && (() => {
-                                    const date = new Date(i.data.booking_time);
-                                    const day = date.getDate();
-                                    const month = date.toLocaleString('en-US', { month: 'short' }).toLowerCase(); // 'May' -> 'may'
-                                    const hours = String(date.getHours()).padStart(2, '0');
-                                    const minutes = String(date.getMinutes()).padStart(2, '0');
-                                    return `${day} ${month} ${hours}:${minutes}`;
-                                })()}
-                            </span>
 
+                            <div className="w-full h-[1px] bg-gray-200 my-3"></div>
+
+                            <div className="flex items-center justify-end gap-2 mt-3">
+                                {/* <button className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg flex items-center justify-center transition-colors duration-200">
+                                    <Eye size={18} className="text-gray-700" />
+                                </button> */}
+                                <button onClick={()=>{setDeleteId(i?.id); setDeleteModal(true)}} className="px-4 text-[white] py-2 bg-[red] hover:bg-red-200 rounded-lg flex items-center justify-center transition-colors duration-200">
+                                    <Delete size={18} className="text-red-800" />
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
+            <BarberOrderDelete isOpen={deleteModal} onClose={()=>setDeleteModal(false)} refresh={getBron} id={deleteId}/>
         </div>
     );
 }

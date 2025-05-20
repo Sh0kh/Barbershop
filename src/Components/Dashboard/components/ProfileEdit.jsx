@@ -4,6 +4,7 @@ import { $api } from "../../../utils";
 import Swal from "sweetalert2";
 import ReactLoading from 'react-loading';
 import { useNavigate } from "react-router-dom";
+import FotoPerson from '../../../Components/UI/Icons/FotoPerson.jpg'
 
 export default function Profile() {
 
@@ -32,7 +33,7 @@ export default function Profile() {
             setPhone(response?.data?.data.phone || "");
             setinfoRu(response?.data?.data.bio_ru || "")
             setinfoUz(response?.data?.data.bio_uz || "")
-            setImagePreview(response?.data?.data.image || "https://i.pravatar.cc/150?img=1");
+            setImagePreview(response?.data?.data.image || "");
         } catch (err) {
             setError(err.response?.data?.message || "Profil ma'lumotlarini olishda xatolik yuz berdi");
             console.error("Xatolik:", err);
@@ -181,7 +182,7 @@ export default function Profile() {
                                 className="absolute inset-0 opacity-0 cursor-pointer"
                             />
                             {imagePreview ? (
-                                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                <img src={imagePreview || FotoPerson} alt="Preview" className="w-full h-full object-cover" />
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400">
                                     <span>+</span>

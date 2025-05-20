@@ -4,11 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import axios from '../../utils/axios';
 import Logo from '../../Components/UI/Icons/HomeLogo.jpg';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const Login = () => {
   const [phone, setPhone] = useState('+998');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Состояние для отображения/скрытия пароля
   const navigate = useNavigate();
 
   const handlePhoneChange = (e) => {
@@ -27,6 +30,11 @@ const Login = () => {
 
     // Объединяем и устанавливаем
     setPhone('+998' + limitedDigits);
+  };
+
+  // Функция для переключения видимости пароля
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleLogin = async () => {
@@ -102,7 +110,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 space-y-8 border border-gray-200">
+      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-3 space-y-8 border border-gray-200">
         <div className="text-center">
           <img src={Logo} alt="Logo" className="mx-auto h-32 w-auto object-contain" />
           <h2 className="mt-4 text-2xl font-semibold text-black">Tizimga kirish</h2>
@@ -110,7 +118,6 @@ const Login = () => {
         </div>
 
         <div className="space-y-6">
-          {/* Телефон */}
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
               Telefon raqam
@@ -123,26 +130,39 @@ const Login = () => {
               onKeyPress={handleKeyPress}
               placeholder="+998 XX XXX XX XX"
               className="bg-white text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              maxLength={13} 
+              maxLength={13}
               crossOrigin={undefined}
             />
           </div>
 
-          {/* Пароль */}
+          {/* Пароль с иконкой глаза для переключения видимости */}
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
               Parol
             </label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Parolni kiriting"
-              className="bg-white text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              crossOrigin={undefined}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"} // Меняем тип в зависимости от состояния
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Parolni kiriting"
+                className="bg-white text-black border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
+                crossOrigin={undefined}
+              />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              >
+                {showPassword ? (
+                  <VisibilityOffIcon className="h-5 w-5" /> // Иконка "закрытого глаза", когда пароль видимый
+                ) : (
+                  <VisibilityIcon className="h-5 w-5" /> // Иконка "открытого глаза", когда пароль скрыт
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Кнопка */}

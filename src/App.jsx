@@ -25,6 +25,7 @@ import BarberWorkTime from "./Components/BarberWorkTime/BarberWorkTime";
 import BarberDayOff from "./Components/BarberDayOff/BarberDayOff";
 import BarberComment from "./Components/BarberComment/BarberComment";
 import OrderCreate from "./Components/Dashboard/components/Orders/OrderCreate";
+import BarberDashboardComment from "./Components/Dashboard/BarberDashboardComment";
 
 function App() {
   return (
@@ -107,6 +108,14 @@ function App() {
           element={
             <ProtectedRoute>
               <BarberDayOff />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/barber/dashboard/comment"
+          element={
+            <ProtectedRoute>
+              <BarberDashboardComment />
             </ProtectedRoute>
           }
         />

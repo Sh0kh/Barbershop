@@ -73,7 +73,7 @@ export default function BarberWorkTimeCreate({refresh}) {
 
     return (
         <>
-            <Button color="blue" onClick={() => setOpen(true)}>
+            <Button color="black" onClick={() => setOpen(true)}>
                 Yaratish
             </Button>
 

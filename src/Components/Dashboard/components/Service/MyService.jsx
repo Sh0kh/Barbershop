@@ -5,6 +5,7 @@ import Edit from "../../../UI/Icons/Edit";
 import Delete from "../../../UI/Icons/Delete";
 import ReactLoading from 'react-loading';
 import BarberServiceDelete from "../../../BarberService/BarberServiceDelete";
+import { Button } from "@material-tailwind/react";
 
 export default function MyService() {
 
@@ -65,11 +66,9 @@ export default function MyService() {
             Ortga
           </button>
           <NavLink to={'/barber/dashboard/service/create'}>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              + Yangi xizmat qo‘shish
-            </button>
+            <Button color="black" >
+              Yaratish
+            </Button>
           </NavLink>
         </div>
       </div>
@@ -100,7 +99,7 @@ export default function MyService() {
                       title="Tahrirlash"
                     >
                       <Edit />
-                    </button> 
+                    </button>
                   </NavLink>
                   <button
                     onClick={() => handleDelete(item.id)}
