@@ -26,6 +26,7 @@ import BarberDayOff from "./Components/BarberDayOff/BarberDayOff";
 import BarberComment from "./Components/BarberComment/BarberComment";
 import OrderCreate from "./Components/Dashboard/components/Orders/OrderCreate";
 import BarberDashboardComment from "./Components/Dashboard/BarberDashboardComment";
+import OrderEdit from "./Components/Dashboard/components/Orders/OrderEdit";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           >
             <Route path="admin/dashboard" element={<Dashboard />} />
             <Route path="admin/bron/create" element={<OrderCreate />} />
+            <Route path="admin/bron/edit/:ID" element={<OrderEdit />} />
             <Route path="admin/barbers" element={<Barbers />} />
             <Route path="admin/barbers/edit" element={<BarbersEdit />} />
             <Route path="admin/barbers/create" element={<BarbersCreate />} />

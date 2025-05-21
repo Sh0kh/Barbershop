@@ -18,7 +18,7 @@ export default function Comment({ data }) {
         {data?.map((review, index) => (
           <div key={index} className="flex items-center">
             <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-semibold mr-2">
-              {review.initial}
+              {review.name?.trim().charAt(0).toUpperCase()}
             </div>
 
             <div className="flex-1">
@@ -35,7 +35,7 @@ export default function Comment({ data }) {
                   ))}
                 </div>
               </div>
-              <p className="text-xs text-gray-500">{review.name}</p>
+              <p className="text-xs text-gray-500 my-[5px]">{review.name}</p>
               <p className="text-xs text-gray-500 my-[3px]">{review.comment}</p>
               <p className="text-xs text-gray-500">{review.created_at}</p>
             </div>
