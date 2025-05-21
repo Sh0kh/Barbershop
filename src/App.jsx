@@ -27,6 +27,8 @@ import BarberComment from "./Components/BarberComment/BarberComment";
 import OrderCreate from "./Components/Dashboard/components/Orders/OrderCreate";
 import BarberDashboardComment from "./Components/Dashboard/BarberDashboardComment";
 import OrderEdit from "./Components/Dashboard/components/Orders/OrderEdit";
+import Benifit from "./Components/Dashboard/components/Benifit/Benifit";
+import Archive from "./Components/Dashboard/components/Archive/Archive";
 
 function App() {
   return (
@@ -49,6 +51,11 @@ function App() {
             <Route path="admin/barbers" element={<Barbers />} />
             <Route path="admin/barbers/edit" element={<BarbersEdit />} />
             <Route path="admin/barbers/create" element={<BarbersCreate />} />
+
+            <Route path="admin/benefit" element={<Benifit/>} />
+            <Route path="admin/archive" element={<Archive/>} />
+
+
 
           </Route>
 

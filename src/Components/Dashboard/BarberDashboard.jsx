@@ -6,17 +6,17 @@ import { useEffect } from "react";
 import ReactLoading from 'react-loading';
 import { $api } from "../../utils";
 import { Comment } from "@mui/icons-material";
-import Delete from "../UI/Icons/Delete";
-import Eye from "../UI/Icons/Eye";
-import BarberOrderDelete from "./BarberOrderDelete";
+// import Delete from "../UI/Icons/Delete";
+// import Eye from "../UI/Icons/Eye";
+// import BarberOrderDelete from "./BarberOrderDelete";
 
 
 
 
 export default function BarberDashboard() {
     const navigate = useNavigate();
-    const [deleteModal, setDeleteModal] = useState()
-    const [deleteId, setDeleteId] = useState()
+    // const [deleteModal, setDeleteModal] = useState()
+    // const [deleteId, setDeleteId] = useState()
 
     const [barber, setBarber] = useState({
         id: null,
@@ -182,7 +182,6 @@ export default function BarberDashboard() {
                                 <div className="flex items-start justify-between">
                                     <div>
                                         <p className="font-semibold text-lg text-gray-800">{i?.data?.user_name}</p>
-                                        <p className="font-medium text-gray-600 my-1">{i?.data?.user_phone}</p>
                                     </div>
 
                                     <span className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">
@@ -211,12 +210,12 @@ export default function BarberDashboard() {
                                         Jami: <strong>{formatPrice(totalPrice)} so'm</strong>
                                     </span>
 
-                                    <button
+                                    {/* <button
                                         onClick={() => { setDeleteId(i?.id); setDeleteModal(true); }}
                                         className="px-4 text-white py-2 bg-[red] hover:bg-red-200 rounded-lg flex items-center justify-center transition-colors duration-200"
                                     >
                                         <Delete size={18} className="text-red-800" />
-                                    </button>
+                                    </button> */}
                                 </div>
                             </div>
                         );
@@ -224,7 +223,7 @@ export default function BarberDashboard() {
 
                 </div>
             </div>
-            <BarberOrderDelete isOpen={deleteModal} onClose={() => setDeleteModal(false)} refresh={getBron} id={deleteId} />
+            {/* <BarberOrderDelete isOpen={deleteModal} onClose={() => setDeleteModal(false)} refresh={getBron} id={deleteId} /> */}
         </div>
     );
 }
