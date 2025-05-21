@@ -92,9 +92,7 @@ export default function RecordHero({ barberData, serviceData }) {
         <h3 className="font-bold text-lg text-gray-900  pt-3 mb-3">
           {t('gone-aw')}
         </h3>
-        <h3 className="font-bold text-lg text-gray-900 border-t pt-3 mb-3">
-          {t('service1')}
-        </h3>
+
         {serviceData?.map((i, index) => (
           <div key={index} className="border-b border-gray-200 py-3">
             <div className="flex justify-between items-center mb-1">

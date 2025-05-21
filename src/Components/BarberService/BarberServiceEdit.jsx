@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { $api } from "../../utils"
+import ReactLoading from 'react-loading';
 import Swal from "sweetalert2";
 
 export default function BarberServiceEdit() {
@@ -11,9 +12,11 @@ export default function BarberServiceEdit() {
     const [infoRu, setInfoRu] = useState('')
     const [price, setPrice] = useState('')
     const { ID } = useParams()
+    const [loading, setLoading] = useState(true)
 
 
     const getService = async () => {
+        setLoading(true)
         try {
             const response = await $api.get(`services/${ID}`)
             const data = response?.data?.data
@@ -24,6 +27,8 @@ export default function BarberServiceEdit() {
             setPrice(data?.price || '')
         } catch (error) {
             console.log(error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -69,7 +74,31 @@ export default function BarberServiceEdit() {
         }
     }
 
+    function formatPrice(input) {
+        const cleanedInput = input.includes('.') ? input.replace(/\.0+$/, '') : input;
+
+        const digits = cleanedInput.replace(/\D/g, '');
+
+        return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+
+
+
     const navigate = useNavigate()
+
+
+    if (loading) {
+        return (
+            <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
+                <div className="mb-6 p-4 bg-white h-[100%] rounded-lg shadow  ">
+                    <div className="flex items-center justify-center h-screen ">
+                        <ReactLoading type="spinningBubbles" color="black" height={80} width={80} />
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <>
             <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
@@ -109,7 +138,7 @@ export default function BarberServiceEdit() {
                         <label className="block text-sm text-gray-700  mb-[7px]">Hizmat narxi</label>
                         <input
                             type="text"
-                            value={price.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}
+                            value={formatPrice(price)}
                             onChange={(e) => setPrice(e.target.value)}
                             className="w-full px-4 py-2 rounded-lg outline-none border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                         />

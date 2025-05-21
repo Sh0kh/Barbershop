@@ -216,6 +216,14 @@ export default function OrderCreatePage() {
   };
 
 
+  function formatPrice(input) {
+    const cleanedInput = input.includes('.') ? input.replace(/\.0+$/, '') : input;
+
+    const digits = cleanedInput.replace(/\D/g, '');
+
+    return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+
 
   return (
     <div className="pt-[80px] pb-8 px-4">
@@ -294,7 +302,7 @@ export default function OrderCreatePage() {
                     <option value="">Tanlang...</option>
                     {services.map((service) => (
                       <option key={service.id} value={service.id}>
-                        {service.name_uz} - {service.price} so'm
+                        {service.name_uz} - {formatPrice(service.price)} so'm
                       </option>
                     ))}
                   </select>
@@ -345,7 +353,7 @@ export default function OrderCreatePage() {
               <div className="p-3 text-sm bg-blue-50 rounded-lg border border-blue-200">
                 <div className="flex justify-between items-center">
                   <span className="font-medium text-gray-700">Jami narx:</span>
-                  <span className="text-lg font-bold text-blue-600">{servicePrice} so'm</span>
+                  <span className="text-lg font-bold text-blue-600">{formatPrice(servicePrice)} so'm</span>
                 </div>
               </div>
             )}

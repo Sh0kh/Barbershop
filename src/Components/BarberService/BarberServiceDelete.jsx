@@ -1,15 +1,12 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Dialog, Typography, Button } from "@material-tailwind/react";
 import { $api } from '../../utils';
 import Swal from "sweetalert2";
 
-
 export default function BarberServiceDelete({ isOpen, onClose, id, refresh }) {
-
-
 
     const DeleteService = async () => {
         try {
-            await $api.delete(`services/${id}`)
+            await $api.delete(`services/${id}`);
             Swal.fire({
                 title: "Muvaffaqiyatli!",
                 icon: "success",
@@ -18,8 +15,8 @@ export default function BarberServiceDelete({ isOpen, onClose, id, refresh }) {
                 timer: 3000,
                 showConfirmButton: false
             });
-            refresh()
-            onClose()
+            refresh();
+            onClose();
         } catch (error) {
             Swal.fire({
                 title: "Xato!",
@@ -31,36 +28,40 @@ export default function BarberServiceDelete({ isOpen, onClose, id, refresh }) {
                 showConfirmButton: false
             });
         }
-    }
+    };
 
     return (
         <Dialog
             open={isOpen}
-            onClose={onClose}
-            PaperProps={{ className: 'bg-white text-black rounded-md shadow-lg' }}
+            handler={onClose}
+            className="bg-white rounded-md shadow-lg"
         >
-            <DialogTitle className="text-gray-900">O'chirishni tasdiqlang</DialogTitle>
-            <DialogContent>
-                <p className="text-sm text-gray-600">Siz ushbu xizmatni o'chirmoqchimisiz?</p>
-            </DialogContent>
-            <DialogActions className="px-4 pb-3">
+            <div className="p-4">
+                <Typography variant="h5" color="blue-gray" className="text-gray-900">
+                    O'chirishni tasdiqlang
+                </Typography>
+                <Typography variant="paragraph" className="mt-2 text-sm text-gray-600">
+                    Siz ushbu xizmatni o'chirmoqchimisiz?
+                </Typography>
+            </div>
+            <div className="flex justify-end gap-2 p-4 mt-2 border-t border-gray-200">
                 <Button
+                    variant="outlined"
+                    color="gray"
                     onClick={onClose}
-                    color="primary"
-                    className="text-gray-600 hover:text-gray-800"
+                    className="normal-case"
                 >
                     Bekor qilish
                 </Button>
                 <Button
-
+                    variant="filled"
+                    color="red"
                     onClick={DeleteService}
-                    color="error"
-                    variant="contained"
-                    className="bg-red-600 hover:bg-red-700 text-white"
+                    className="normal-case bg-red-600 hover:bg-red-700 text-white"
                 >
                     O'chirish
                 </Button>
-            </DialogActions>
+            </div>
         </Dialog>
     );
 }

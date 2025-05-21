@@ -52,7 +52,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="pt-[80px] px-4 bg-[#f8f9ff] min-h-screen">
+    <div className="pt-[80px] px-4 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
       <p className="text-sm text-gray-500 mb-8">Barber Shop buyurtmalari</p>
 

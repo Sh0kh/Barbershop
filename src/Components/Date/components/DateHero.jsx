@@ -7,7 +7,7 @@ import ReactLoading from 'react-loading';
 
 
 export default function DateHero() {
-  const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
   const today = new Date();
   const [currentMonthIndex, setCurrentMonthIndex] = useState(today.getMonth()); // Current month
   const [currentYear, setCurrentYear] = useState(today.getFullYear()); // Current year
@@ -17,15 +17,26 @@ export default function DateHero() {
   const { barberId, selectedServices } = useParams();
   const [barberData, setBarberData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dateOff, setDateOff] = useState([])
 
   // Parse selected services from URL
   const servicesArray = selectedServices ? selectedServices.split(',').map(id => parseInt(id, 10)) : [];
+
+
+  const months = i18n.language === 'ru'
+    ? ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+    : ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun', 'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'];
 
   const getBarberTime = async () => {
     if (!selectedDate) return;
     setLoading(true);
     try {
-      const formattedDate = selectedDate.toISOString().split('T')[0];
+      // Fix for date issue - format date with local timezone to prevent day offset
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+      const day = String(selectedDate.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      
       const response = await axios.get(`/date/${barberId}?date=${formattedDate}`);
       setBarberData(response.data);
       // Reset selected time when date changes
@@ -37,6 +48,19 @@ export default function DateHero() {
       setLoading(false);
     }
   };
+
+  const getBarberDayOff = async () => {
+    try {
+      const response = await axios.get(`barberss/${barberId}`)
+      setDateOff(response?.data?.data?.day_offs)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getBarberDayOff()
+  }, [])
 
   useEffect(() => {
     if (selectedDate) {
@@ -96,6 +120,14 @@ export default function DateHero() {
     });
   };
 
+  // Check if a date is in the day_offs array
+  const isDateOff = (year, month, day) => {
+    const date = new Date(year, month, day);
+    // Format date manually to avoid timezone issues
+    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return dateOff.includes(formattedDate);
+  };
+
   const generateCalendarDays = () => {
     const daysInMonth = new Date(currentYear, currentMonthIndex + 1, 0).getDate();
     const firstDayOfWeek = new Date(currentYear, currentMonthIndex, 1).getDay();
@@ -110,7 +142,9 @@ export default function DateHero() {
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
-      days.push({ day: i, currentMonth: true });
+      // Check if date is in day_offs
+      const isDayOff = isDateOff(currentYear, currentMonthIndex, i);
+      days.push({ day: i, currentMonth: true, isDayOff });
     }
 
     const remainingDays = 42 - days.length;
@@ -121,7 +155,11 @@ export default function DateHero() {
     return days;
   };
 
-  const handleDateSelect = (day) => {
+  const handleDateSelect = (day, isDayOff) => {
+    // Prevent selecting days that are marked as day off
+    if (isDayOff) {
+      return;
+    }
     const newDate = new Date(currentYear, currentMonthIndex, day);
     setSelectedDate(newDate);
   };
@@ -132,25 +170,28 @@ export default function DateHero() {
   const getRecordPath = () => {
     if (!selectedDate) return "/record";
 
-    // Format date as YYYY-MM-DD for URL
-    const formattedDate = selectedDate.toISOString().split('T')[0];
-    const servicesParam = servicesArray.length > 0 ? `/${servicesArray.join(',')}` : '';
+    // Format date manually to avoid timezone issues
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(selectedDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     
+    const servicesParam = servicesArray.length > 0 ? `/${servicesArray.join(',')}` : '';
+
     // Base path without query parameters
     let path = `/record/${barberId}${servicesParam}`;
-    
+
     // Add date as query parameter
     path += `?date=${formattedDate}`;
-    
+
     // Add time as query parameter if selected
     if (selectedTime) {
       path += `&time=${selectedTime}`;
     }
-    
+
     return path;
   };
 
-  // Check if current day in calendar is selected
   const isDateSelected = (day) => {
     if (!selectedDate) return false;
     return selectedDate.getDate() === day &&
@@ -158,11 +199,9 @@ export default function DateHero() {
       selectedDate.getFullYear() === currentYear;
   };
 
-  // Get available times grouped by period
   const availableTimes = barberData?.available_times || [];
   const groupedTimes = groupTimesByPeriod(availableTimes);
 
-  // Initial load - fetch available times for today
   useEffect(() => {
     getBarberTime();
   }, []);
@@ -170,7 +209,6 @@ export default function DateHero() {
   return (
     <div className="max-w-[100%] mx-auto p-4 bg-white pb-24 min-h-screen">
       <LogoUse />
-
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={handlePrevMonth}
@@ -209,32 +247,40 @@ export default function DateHero() {
       <div className="mb-8">
         {/* Weekday headers */}
         <div className="grid grid-cols-7 gap-1 mb-3">
-          {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((day) => (
+          {(
+            i18n.language === 'ru'
+              ? ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+              : ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya']
+          ).map((day) => (
             <div key={day} className="text-center text-gray-500 font-medium text-sm">{day}</div>
           ))}
+
         </div>
 
         {/* Calendar days */}
         <div className="grid grid-cols-7 gap-1">
-          {calendarDays.map(({ day, currentMonth }, index) => (
+          {calendarDays.map(({ day, currentMonth, isDayOff }, index) => (
             <div
               key={index}
               className={`relative text-center p-2 text-sm rounded-full
-                ${currentMonth ? 'text-black' : 'text-gray-300'} 
-                ${currentMonth && isDateSelected(day) ? 'bg-black text-white cursor-pointer' : ''}
-                ${currentMonth ? 'hover: cursor-pointer' : ''}`}
-              onClick={() => currentMonth && handleDateSelect(day)}
+                ${!currentMonth || isDayOff ? 'text-gray-300' : 'text-black'} 
+                ${currentMonth && isDateSelected(day) && !isDayOff ? 'bg-black text-white' : ''}
+                ${currentMonth && !isDayOff ? 'hover:cursor-pointer' : 'cursor-default'}
+                ${isDayOff ? 'bg-gray-100' : ''}`}
+              onClick={() => currentMonth && !isDayOff && handleDateSelect(day)}
             >
               {day}
-              {isDateSelected(day) && currentMonth && (
+              {isDateSelected(day) && currentMonth && !isDayOff && (
                 <span className="absolute inset-0 border-2 border-black rounded-full"></span>
+              )}
+              {isDayOff && (
+                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-red-500 rounded-full"></span>
               )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Time selection */}
       {loading ? (
         <div className="flex items-center justify-center">
           <ReactLoading type="spinningBubbles" color="black" height={80} width={80} />
@@ -270,7 +316,6 @@ export default function DateHero() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <h3 className="font-medium text-lg text-gray-800 mb-2">{t('barber_busy')}</h3>
-                    <p className="text-gray-600">{t('no_available_slots')}</p>
                     <p className="text-gray-600 mt-2">{t('please_select_another_day')}</p>
                   </div>
                 </div>

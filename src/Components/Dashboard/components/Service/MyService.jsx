@@ -5,6 +5,7 @@ import Edit from "../../../UI/Icons/Edit";
 import Delete from "../../../UI/Icons/Delete";
 import ReactLoading from 'react-loading';
 import BarberServiceDelete from "../../../BarberService/BarberServiceDelete";
+import { Button } from "@material-tailwind/react";
 
 export default function MyService() {
 
@@ -65,56 +66,74 @@ export default function MyService() {
             Ortga
           </button>
           <NavLink to={'/barber/dashboard/service/create'}>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              + Yangi xizmat qo‘shish
-            </button>
+            <Button color="black" >
+              Yaratish
+            </Button>
           </NavLink>
         </div>
       </div>
 
-      <div className="rounded-lg mb-4">
-        <div className="mb-2 p-2">
-
-        </div>
-        <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
-          {services?.map((item, itemIndex) => (
-            <div
-              key={itemIndex}
-              className="mb-4 last:mb-0 border-2 border-black p-4 rounded-lg"
-            >
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-800">{item.name_uz}</h3>
-                  <p className="text-sm text-gray-500 mt-1">60 daqiqa</p>
-                  <p className="text-sm text-gray-600 mt-1">{item.description_uz}</p>
-                  <span className="font-semibold text-gray-800 mt-2 block text-sm">
-                    {String(item?.price)?.slice(0, -3)?.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} uzs
-                  </span>
-                </div>
-                <div className="flex flex-col gap-2 ml-4">
-                  <NavLink to={`/barber/dashboard/service/edit/${item?.id}`}>
+      {services?.length <= 0 || !services ? (
+        <div className="mx-auto min-h-screen mt-4">
+          <div className="mb-6 p-4 bg-white h-[100%] rounded-lg shadow  ">
+            <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+              <div className="text-gray-400 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-700 mb-2"> Ma'lumot topilmadi</h3>
+              <p className="text-sm text-gray-500 max-w-xs">
+                Hozircha hali ma'lumot yo‘q, iltimos, keyinroq urinib korishni so‘raymiz.
+              </p>
+            </div>
+          </div>
+        </div >
+      ) : (
+        <div className="rounded-lg mb-4">
+          <div className="mb-2 p-2">
+          </div>
+          <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
+            {services?.map((item, itemIndex) => (
+              <div
+                key={itemIndex}
+                className="mb-4 last:mb-0 border-2 border-black p-4 rounded-lg"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-800">{item.name_uz}</h3>
+                    {/* <p className="text-sm text-gray-500 mt-1">60 daqiqa</p> */}
+                    <p className="text-sm text-gray-600 mt-1">{item.description_uz}</p>
+                    <span className="font-semibold text-gray-800 mt-2 block text-sm">
+                      {String(item?.price)?.slice(0, -3)?.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} uzs
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2 ml-4">
+                    <NavLink to={`/barber/dashboard/service/edit/${item?.id}`}>
+                      <button
+                        className="text-black hover:text-yellow-800 hover:bg-yellow-100 p-2 rounded-full transition"
+                        title="Tahrirlash"
+                      >
+                        <Edit />
+                      </button>
+                    </NavLink>
                     <button
-                      className="text-black hover:text-yellow-800 hover:bg-yellow-100 p-2 rounded-full transition"
-                      title="Tahrirlash"
+                      onClick={() => handleDelete(item.id)}
+                      className="text-black hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition flex items-center justify-center"
+                      title="O'chirish"
                     >
-                      <Edit />
-                    </button> 
-                  </NavLink>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="text-black hover:text-red-800 hover:bg-red-100 p-2 rounded-full transition flex items-center justify-center"
-                    title="O'chirish"
-                  >
-                    <Delete size={20} />
-                  </button>
+                      <Delete size={20} />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
       <BarberServiceDelete refresh={getAllService} id={deleteId} isOpen={deleteModal} onClose={() => setDeleteModal(false)} />
     </div>
   );

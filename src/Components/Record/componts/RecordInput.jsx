@@ -96,7 +96,7 @@ export default function RecordInput() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Ismingizni kiriting"
+                    placeholder={t('name')}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black text-gray-900"
                     required
                 />
