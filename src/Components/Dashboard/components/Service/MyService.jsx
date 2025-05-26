@@ -65,11 +65,11 @@ export default function MyService() {
           >
             Ortga
           </button>
-          <NavLink to={'/barber/dashboard/service/create'}>
+          {/* <NavLink to={'/barber/dashboard/service/create'}>
             <Button color="black" >
               Yaratish
             </Button>
-          </NavLink>
+          </NavLink> */}
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export default function MyService() {
                     </span>
                   </div>
                   <div className="flex flex-col gap-2 ml-4">
-                    <NavLink to={`/barber/dashboard/service/edit/${item?.id}`}>
+                    {/* <NavLink to={`/barber/dashboard/service/edit/${item?.id}`}>
                       <button
                         className="text-black hover:text-yellow-800 hover:bg-yellow-100 p-2 rounded-full transition"
                         title="Tahrirlash"
@@ -125,7 +125,7 @@ export default function MyService() {
                       title="O'chirish"
                     >
                       <Delete size={20} />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -134,7 +134,7 @@ export default function MyService() {
         </div>
       )}
 
-      <BarberServiceDelete refresh={getAllService} id={deleteId} isOpen={deleteModal} onClose={() => setDeleteModal(false)} />
+      {/* <BarberServiceDelete refresh={getAllService} id={deleteId} isOpen={deleteModal} onClose={() => setDeleteModal(false)} /> */}
     </div>
   );
 }

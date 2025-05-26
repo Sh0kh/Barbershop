@@ -9,7 +9,7 @@ import { Button } from "@material-tailwind/react";
 import BarberWorkTimeDelete from "./Components/BarberWorkTimeDelete";
 import BarberWorkTimeEdit from "./Components/BarberWorkTimeEdit";
 
-export default function BarberWorkTime() {
+export default function BarberWorkTimeTwo() {
 
     const navigate = useNavigate()
 
@@ -65,7 +65,7 @@ export default function BarberWorkTime() {
     }
 
     return (
-        <div className="mx-auto max-w-[600px] pb-24  min-h-screen p-4">
+        <div className="mx-auto max-w-[1000px] pb-24  min-h-screen p-4">
             <div className="mb-1 p-4 bg-white rounded-lg shadow  ">
 
                 <div className="flex justify-between items-center ">
@@ -75,7 +75,7 @@ export default function BarberWorkTime() {
                     >
                         Ortga
                     </button>
-                    {/* <BarberWorkTimeCreate refresh={getWorkTime} /> */}
+                    <BarberWorkTimeCreate refresh={getWorkTime} />
                 </div>
             </div>
             {WorkTime === null || !WorkTime || WorkTime?.length === 0 ? (
@@ -132,7 +132,7 @@ export default function BarberWorkTime() {
                                             <div className="text-[15px] font-bold">{day}</div>
                                             <div className="text-gray-500 text-[15px] uppercase">{month}</div>
                                         </div>
-                                        {/* <div className="flex justify-center gap-[5px] mt-auto">
+                                        <div className="flex justify-center gap-[5px] mt-auto">
                                             <Button
                                                 onClick={() => handleEdit(item)}
                                                 className="py-[5px] px-[9px]"
@@ -145,7 +145,7 @@ export default function BarberWorkTime() {
                                                 variant="gradient" color="blue" >
                                                 <Delete size={15} />
                                             </Button>
-                                        </div> */}
+                                        </div>
                                     </div>
                                 );
                             })}
@@ -153,8 +153,8 @@ export default function BarberWorkTime() {
                     </div>
                 </div>
             )}
-            {/* <BarberWorkTimeDelete isOpen={deleteModal} onClose={() => setDeleteModal(false)} id={deleteId} refresh={getWorkTime} />
-            <BarberWorkTimeEdit isOpen={EditModal} onClose={() => setEditModal(false)} data={EditData} refresh={getWorkTime} /> */}
+            <BarberWorkTimeDelete isOpen={deleteModal} onClose={() => setDeleteModal(false)} id={deleteId} refresh={getWorkTime} />
+            <BarberWorkTimeEdit isOpen={EditModal} onClose={() => setEditModal(false)} data={EditData} refresh={getWorkTime} />
         </div>
     );
 }

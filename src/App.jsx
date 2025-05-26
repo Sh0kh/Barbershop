@@ -29,6 +29,12 @@ import BarberDashboardComment from "./Components/Dashboard/BarberDashboardCommen
 import OrderEdit from "./Components/Dashboard/components/Orders/OrderEdit";
 import Benifit from "./Components/Dashboard/components/Benifit/Benifit";
 import Archive from "./Components/Dashboard/components/Archive/Archive";
+import BarbersInfo from "./Components/Dashboard/components/Barbers/BarbersInfo";
+import Cost from "./Components/Dashboard/components/Cost/Cost";
+import TwoService from "./Components/Dashboard/components/Service/TwoService";
+import BarberWorkTimeTwo from "./Components/BarberWorkTime/BarberWorkTimeTwo";
+import BarberDayOffTwo from "./Components/BarberDayOff/BarberDayOffTwo";
+import BarberDashboardComTwo from "./Components/Dashboard/BarberDashboardComTwo";
 
 function App() {
   return (
@@ -49,11 +55,15 @@ function App() {
             <Route path="admin/bron/create" element={<OrderCreate />} />
             <Route path="admin/bron/edit/:ID" element={<OrderEdit />} />
             <Route path="admin/barbers" element={<Barbers />} />
+            <Route path="admin/barbers/info/:ID" element={<BarbersInfo />} />
+
             <Route path="admin/barbers/edit" element={<BarbersEdit />} />
             <Route path="admin/barbers/create" element={<BarbersCreate />} />
 
             <Route path="admin/benefit" element={<Benifit/>} />
             <Route path="admin/archive" element={<Archive/>} />
+            <Route path="admin/cost" element={<Cost/>} />
+
 
 
 
@@ -72,6 +82,8 @@ function App() {
 
 
         <Route path="/berber/dashboard/service" element={<MyService />} />
+        <Route path="/berber/dashboard/servicetwo" element={<TwoService/>} />
+
         <Route
           path="/barber/dashboard"
           element={
@@ -112,6 +124,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+          <Route
+          path="/barber/dashboard/workTimetwo"
+          element={
+            <ProtectedRoute>
+              <BarberWorkTimeTwo />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/barber/dashboard/dayOff"
           element={
@@ -120,11 +140,27 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/barber/dashboard/dayOfftwo"
+          element={
+            <ProtectedRoute>
+              <BarberDayOffTwo />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/barber/dashboard/comment"
           element={
             <ProtectedRoute>
               <BarberDashboardComment />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/barber/dashboard/commenttwo"
+          element={
+            <ProtectedRoute>
+              <BarberDashboardComTwo />
             </ProtectedRoute>
           }
         />

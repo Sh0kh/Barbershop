@@ -48,6 +48,15 @@ export default function Sidebar() {
               d="M5 21q-.825 0-1.412-.587T3 19V6.525q0-.35.113-.675t.337-.6L4.7 3.725q.275-.35.687-.538T6.25 3h11.5q.45 0 .863.188t.687.537l1.25 1.525q.225.275.338.6t.112.675V19q0 .825-.587 1.413T19 21zm.4-15h13.2l-.85-1H6.25zm6.6 4q-.425 0-.712.288T11 11v3.2l-.9-.9q-.275-.275-.7-.275t-.7.275t-.275.7t.275.7l2.6 2.6q.3.3.7.3t.7
              -.3l2.6-2.6q.275-.275.275-.7t-.275-.7t-.7-.275t-.7.275l-.9.9V11q0-.425-.288-.712T12 10"/></svg>
             )
+        },
+            {
+            id: 2,
+            title: "Harajat",
+            path: "/admin/cost",
+            icon: (
+             <svg xmlns="http://www.w3.org/2000/svg" className="text-[40px] text-MainColor group-hover:text-[#0077b6] duration-300" width="30" height="40" viewBox="0 0 15 15"><path fill="currentColor" d="M4.5 7H4v1h.5zm6 1h.5V7h-.5zm-2 2H8v1h.5zm2 1h.5v-1h-.5zm-6-7H4v1h.5zm2 1H7V4h-.5zm4-4.5l.354-.354L10.707 0H10.5zm3 3h.5v-.207l-.146-.147zM4.5 8h6V7h-6zm4 3h2v-1h-2zm-4-6h2V4h-2zm8 9h-10v1h10zM2 13.5v-12H1v12zM2.5 1h8V0h-8zM13 3.5v10h1v-10zM10.146.854l3 3l.708-.708l-3-3zM2.5 14a.5.5 0 0 1-.5-.5H1A1.5 1.5 0 0 0 2.5
+              15zm10 1a1.5 1.5 0 0 0 1.5-1.5h-1a.5.5 0 0 1-.5.5zM2 1.5a.5.5 0 0 1 .5-.5V0A1.5 1.5 0 0 0 1 1.5z"/></svg>
+            )
         }
     ];
 

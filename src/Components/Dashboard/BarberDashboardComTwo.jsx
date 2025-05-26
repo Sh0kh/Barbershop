@@ -6,7 +6,7 @@ import BarberDashboardCommentDelete from "./components/BarberComment/BarberDashb
 import Delete from "../UI/Icons/Delete";
 
 
-export default function BarberDashboardComment() {
+export default function BarberDashboardComTwo() {
 
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
@@ -44,7 +44,7 @@ export default function BarberDashboardComment() {
 
     return (
         <>
-            <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
+            <div className="mx-auto max-w-[1000px] pb-24 min-h-screen p-4">
                 <div className="mb-6 p-4 bg-white rounded-lg shadow  ">
                     <div className="flex justify-between items-center ">
                         <h1 className="text-[16px] font-bold">
@@ -96,11 +96,11 @@ export default function BarberDashboardComment() {
                                                 </svg>
                                             ))}
                                         </div>
-                                        {/* <button 
+                                        <button 
                                         onClick={()=>{setDeleteModal(true); setDeleteId(review?.id)}}
                                         >
                                             <Delete size={20} />
-                                        </button> */}
+                                        </button>
                                     </div>
                                     <p className="text-xs text-gray-500">{review.name}</p>
                                     <p className="text-xs text-gray-500 my-[3px]">{review.comment}</p>

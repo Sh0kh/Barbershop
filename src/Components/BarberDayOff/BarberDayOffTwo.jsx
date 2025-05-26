@@ -7,7 +7,7 @@ import Calendar from "./Calendar";
 import Swal from "sweetalert2";
 
 
-export default function BarberDayOff() {
+export default function BarberDayOffTwo() {
     const navigate = useNavigate();
     const [day_off, setday_off] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -135,7 +135,7 @@ export default function BarberDayOff() {
     }
 
     return (
-        <div className="mx-auto max-w-[600px] pb-24 min-h-screen p-4">
+        <div className="mx-auto max-w-[1000px] pb-24 min-h-screen p-4">
             <div className="mb-1 p-4 bg-white rounded-lg shadow">
                 <div className="flex justify-between items-center">
                     <button
@@ -159,7 +159,7 @@ export default function BarberDayOff() {
                     />
                 </div>
             </div>
-{/* 
+
             {selectedDate && (
                 <div className="p-4 bg-white rounded-lg shadow">
                     <h3 className="font-medium mb-2">Tanlangan sana:</h3>
@@ -198,7 +198,7 @@ export default function BarberDayOff() {
                         </Button>
                     )}
                 </div>
-            )} */}
+            )}
 
             {day_off.length > 0 && (
                 <div className="mt-4 p-4 bg-white rounded-lg shadow">
