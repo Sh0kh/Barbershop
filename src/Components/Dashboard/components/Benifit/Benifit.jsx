@@ -1,129 +1,344 @@
-import { useState } from 'react';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import {
-  Typography,
-  Divider,
-  Paper,
-  Grid,
-  TextField,
-  Container
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { Calendar, DollarSign, TrendingUp, Users, Filter } from 'lucide-react';
+      import { $api } from '../../../../utils';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+const PaymentsDashboard = () => {
+  const [paymentsData, setPaymentsData] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [loading, setLoading] = useState(false);
 
-export default function Benifit() {
-  // Ma'lumotlar
-  const initialData = [1200, 1900, 1500, 2000, 2300, 2400, 2100, 2500, 2800, 3000, 2900, 3200];
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  
-  const [startRange, setStartRange] = useState(0);
-  const [endRange, setEndRange] = useState(11);
-  
-  // Inputlarni tekshirish
-  const handleStartChange = (e) => {
-    let value = parseInt(e.target.value) || 0;
-    if (value < 0) value = 0;
-    if (value > endRange) value = endRange;
-    setStartRange(value);
+  // Hozirgi oyni olish
+  const getCurrentMonth = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const firstDay = `${year}-${month}-01`;
+    const lastDay = new Date(year, now.getMonth() + 1, 0).getDate();
+    const lastDayFormatted = `${year}-${month}-${String(lastDay).padStart(2, '0')}`;
+    return { firstDay, lastDayFormatted };
   };
-  
-  const handleEndChange = (e) => {
-    let value = parseInt(e.target.value) || 11;
-    if (value < startRange) value = startRange;
-    if (value > 11) value = 11;
-    setEndRange(value);
+
+  // Backend dan ma'lumot olish
+  const fetchPaymentsData = async (start = null, end = null) => {
+    setLoading(true);
+    try {
+      // Agar sana berilmagan bo'lsa, hozirgi oyni ishlatish
+      let startParam = start || startDate;
+      let endParam = end || endDate;
+      
+      if (!startParam || !endParam) {
+        const { firstDay, lastDayFormatted } = getCurrentMonth();
+        startParam = firstDay;
+        endParam = lastDayFormatted;
+        setStartDate(firstDay);
+        setEndDate(lastDayFormatted);
+      }
+
+      // Haqiqiy API chaqiruvi - $api ni import qilishingiz kerak
+      
+      const response = await $api.get(`admin/statistika/payments-date-range`, {
+        params: {
+          start_date: startParam,
+          end_date: endParam
+        }
+      });
+      setPaymentsData(response.data);
+
+      // Demo uchun mock data
+      const mockResponse = {
+        total_payments: "150,000 UZS",
+        count: 5,
+        start_date: startParam,
+        end_date: endParam,
+        daily: generateDailyData(startParam, endParam)
+      };
+      
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setPaymentsData(mockResponse);
+      
+    } catch (error) {
+      console.error('Ma\'lumotlarni yuklashda xatolik:', error);
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  // Umumiy foyda
-  const totalProfit = initialData
-    .slice(startRange, endRange + 1)
-    .reduce((sum, value) => sum + value, 0);
-  
-  // Chart uchun ma'lumot
-  const chartData = {
-    labels: months.slice(startRange, endRange + 1),
-    datasets: [{
-      label: 'Profit',
-      data: initialData.slice(startRange, endRange + 1),
-      borderColor: '#1976d2',
-      backgroundColor: 'rgba(25, 118, 210, 0.1)',
-      tension: 0.1,
-      fill: true,
-    }],
+
+
+
+  // Komponent yuklanganda ma'lumotlarni olish
+  useEffect(() => {
+    const { firstDay, lastDayFormatted } = getCurrentMonth();
+    setStartDate(firstDay);
+    setEndDate(lastDayFormatted);
+    fetchPaymentsData(firstDay, lastDayFormatted);
+  }, []);
+
+  // Sanalar o'zgarganda ma'lumotlarni yangilash
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchPaymentsData();
+    }
+  }, [startDate, endDate]);
+
+  // Grafik uchun ma'lumotlarni tayyorlash
+  const chartData = paymentsData?.daily?.map(item => ({
+    date: new Date(item.date).getDate(),
+    amount: item.amount,
+    fullDate: item.date,
+    formattedDate: new Date(item.date).toLocaleDateString('uz-UZ', {
+      day: '2-digit',
+      month: '2-digit'
+    })
+  })) || [];
+
+  // Hozirgi oyni o'rnatish
+  const setCurrentMonth = () => {
+    const { firstDay, lastDayFormatted } = getCurrentMonth();
+    setStartDate(firstDay);
+    setEndDate(lastDayFormatted);
   };
-  
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'top' },
-    },
+
+  // Tooltip komponenti
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white border-2 border-gray-300 p-3 shadow-lg rounded-lg">
+          <p className="text-gray-800 font-medium">{`Sana: ${data.formattedDate}`}</p>
+          <p className="text-gray-600">{`Summa: ${payload[0].value.toLocaleString()} UZS`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  // Umumiy summani hisoblash
+  const calculateTotalFromDaily = () => {
+    if (!paymentsData?.daily) return 0;
+    return paymentsData.daily.reduce((sum, item) => sum + item.amount, 0);
+  };
+
+  // O'rtacha to'lovni hisoblash  
+  const calculateAveragePayment = () => {
+    if (!paymentsData?.count || paymentsData.count === 0) return 0;
+    const totalFromString = paymentsData.total_payments ? 
+      parseInt(paymentsData.total_payments.replace(/[^\d]/g, '')) : 0;
+    return Math.round(totalFromString / paymentsData.count);
   };
 
   return (
-    <div style={{ paddingTop: '10px' }}>
-      <Container maxWidth={false} sx={{ py: 4, px: 2 }}>
-        <Divider sx={{ mb: 4 }} />
-        
-        <Paper elevation={3} sx={{ p: 2, mb: 4, height: '400px' }}>
-          <div style={{ width: '100%', height: '100%' }}>
-            <Line 
-              data={chartData} 
-              options={chartOptions}
-            />
+    <div className="min-h-screen mt-[60px]  p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Sarlavha */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">To'lovlar Tahlili</h1>
+          <p className="text-gray-600 text-lg">Moliyaviy tushumlarni monitoring qilish</p>
+        </div>
+
+        {/* Sanalar boshqaruv paneli */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-gray-600" />
+              <span className="font-medium text-gray-700">Davr:</span>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-600">Dan:</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+              />
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium text-gray-600">Gacha:</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-gray-400 focus:border-transparent"
+              />
+            </div>
+            
+            <button
+              onClick={setCurrentMonth}
+              disabled={loading}
+              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2 disabled:opacity-50"
+            >
+              <Filter className="w-4 h-4" />
+              Joriy oy
+            </button>
+
+            <button
+              onClick={() => fetchPaymentsData()}
+              disabled={loading}
+              className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 disabled:opacity-50"
+            >
+              {loading ? 'Yuklanmoqda...' : 'Yangilash'}
+            </button>
           </div>
-        </Paper>
-        
-        <Paper elevation={3} sx={{ p: 3, mb: 4, textAlign: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Umumiy foyda: ${totalProfit.toLocaleString()}
-          </Typography>
-        </Paper>
-        
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} sm={5} md={4}>
-            <TextField
-              fullWidth
-              label="Boshlang'ich raqam (0-11)"
-              type="number"
-              inputProps={{ min: 0, max: endRange }}
-              value={startRange}
-              onChange={handleStartChange}
-              variant="outlined"
-            />
-          </Grid>
+        </div>
+
+        {/* Statistik kartalar */}
+        {paymentsData && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">Umumiy summa</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {calculateTotalFromDaily().toLocaleString()} UZS
+                  </p>
+                </div>
+                <div className="bg-gray-100 p-3 rounded-full">
+                  <DollarSign className="w-8 h-8 text-gray-700" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">To'lovlar soni</p>
+                  <p className="text-3xl font-bold text-gray-900">{paymentsData.count}</p>
+                </div>
+                <div className="bg-gray-100 p-3 rounded-full">
+                  <Users className="w-8 h-8 text-gray-700" />
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-gray-600 text-sm font-medium">O'rtacha to'lov</p>
+                  <p className="text-3xl font-bold text-gray-900">
+                    {calculateAveragePayment().toLocaleString()} UZS
+                  </p>
+                </div>
+                <div className="bg-gray-100 p-3 rounded-full">
+                  <TrendingUp className="w-8 h-8 text-gray-700" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Chiziqli grafik */}
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">To'lovlar dinamikasi</h2>
+            <p className="text-gray-600">Kunlik tushumlar statistikasi</p>
+          </div>
           
-          <Grid item xs={12} sm={5} md={4}>
-            <TextField
-              fullWidth
-              label="Oxirgi raqam (0-11)"
-              type="number"
-              inputProps={{ min: startRange, max: 11 }}
-              value={endRange}
-              onChange={handleEndChange}
-              variant="outlined"
-            />
-          </Grid>
-        </Grid>
-      </Container>
+          {loading ? (
+            <div className="flex items-center justify-center h-96">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600"></div>
+              <span className="ml-3 text-gray-600">Ma'lumotlar yuklanmoqda...</span>
+            </div>
+          ) : (
+            <div className="h-96">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                  />
+                  <YAxis 
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value.toLocaleString()}`}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="amount" 
+                    stroke="#374151" 
+                    strokeWidth={3}
+                    dot={{ fill: '#374151', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: '#374151', strokeWidth: 2, fill: '#fff' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* Ustunli grafik */}
+        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Kunlar bo'yicha tafsilot</h2>
+            <p className="text-gray-600">To'lovlarning ustunli diagrammasi</p>
+          </div>
+          
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-gray-600"></div>
+              <span className="ml-3 text-gray-600">Ma'lumotlar yuklanmoqda...</span>
+            </div>
+          ) : (
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis 
+                    dataKey="date" 
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                  />
+                  <YAxis 
+                    stroke="#6b7280"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value.toLocaleString()}`}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar 
+                    dataKey="amount" 
+                    fill="#374151"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+
+        {/* Ma'lumotlar haqida */}
+        {paymentsData && (
+          <div className="bg-white rounded-xl mt-[30px] shadow-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">Davr haqida ma'lumot</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+              <div>
+                <span className="font-medium">Boshlanish sanasi:</span> {new Date(paymentsData.start_date).toLocaleDateString('uz-UZ')}
+              </div>
+              <div>
+                <span className="font-medium">Tugash sanasi:</span> {new Date(paymentsData.end_date).toLocaleDateString('uz-UZ')}
+              </div>
+              <div>
+                <span className="font-medium">Jami kunlar:</span> {chartData.length} kun
+              </div>
+              <div>
+                <span className="font-medium">To'lov bo'lgan kunlar:</span> {chartData.filter(item => item.amount > 0).length} kun
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
-}
+};
+
+export default PaymentsDashboard;

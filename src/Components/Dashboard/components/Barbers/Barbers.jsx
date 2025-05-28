@@ -7,6 +7,7 @@ import BarberEdit from "./BarbersEdit";
 import Delete from "../../../UI/Icons/Delete";
 import Edit from "../../../UI/Icons/Edit";
 import ReactLoading from 'react-loading';
+import FotoPerson from '../../../UI/Icons/FotoPerson.jpg'
 
 export default function Barbers() {
   const [barbers, setBarbers] = useState([]);
@@ -15,6 +16,7 @@ export default function Barbers() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedBarber, setSelectedBarber] = useState(null);
+
 
   const token = localStorage.getItem("token");
 
@@ -36,7 +38,7 @@ export default function Barbers() {
   const handleDelete = async (id, e) => {
     e.stopPropagation(); // Card click eventini to'xtatish
     e.preventDefault(); // NavLink navigatsiyasini to'xtatish
-    
+
     const result = await Swal.fire({
       title: "Ishonchingiz komilmi?",
       text: "Bu barberni o'chirishni xohlaysizmi?",
@@ -156,7 +158,7 @@ export default function Barbers() {
               >
                 <div className="relative">
                   <img
-                    src={barber.image}
+                    src={barber.image || FotoPerson}
                     alt={barber.name}
                     className="w-full h-48 object-cover"
                   />
@@ -166,7 +168,7 @@ export default function Barbers() {
                   <h3 className="text-lg font-bold text-gray-800 mb-2 truncate">
                     {barber.name} {barber.lastname}
                   </h3>
-                  
+
                   <div className="space-y-2 mb-4">
                     <p className="text-sm text-gray-600 flex items-center">
                       <span className="font-medium">Telefon:</span>

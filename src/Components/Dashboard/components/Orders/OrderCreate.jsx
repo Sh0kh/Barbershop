@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import { $api } from "../../../../utils";
 
 export default function OrderCreatePage() {
-  // Состояния остаются теми же
   const [barbers, setBarbers] = useState([]);
   const [services, setServices] = useState([]);
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -12,8 +11,7 @@ export default function OrderCreatePage() {
   const [clientName, setClientName] = useState("");
   const [phone, setPhone] = useState("");
   const [bookingTime, setBookingTime] = useState("");
-  const [selectedService, setSelectedService] = useState("");
-  const [servicePrice, setServicePrice] = useState(0);
+  const [selectedServices, setSelectedServices] = useState([]); // [{ id, price }]
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(true);
   const [errors, setErrors] = useState({
@@ -28,11 +26,14 @@ export default function OrderCreatePage() {
   const validateForm = () => {
     const newErrors = {
       clientName: !clientName ? "Ism familiya kiritilishi shart" : "",
-      phone: !phone ? "Telefon raqam kiritilishi shart" :
-        !/^\+998[0-9]{9}$/.test(phone) ? "Noto'g'ri telefon raqam formati" : "",
+      phone: !phone
+        ? "Telefon raqam kiritilishi shart"
+        : !/^\+998[0-9]{9}$/.test(phone)
+          ? "Noto'g'ri telefon raqam formati"
+          : "",
       barber: !selectedBarber ? "Sartarosh tanlanishi shart" : "",
       date: !selectedDate ? "Sana tanlanishi shart" : "",
-      service: !selectedService ? "Xizmat tanlanishi shart" : ""
+      service: selectedServices.length === 0 ? "Hech bo'lmaganda bitta xizmat tanlang" : ""
     };
 
     setErrors(newErrors);
@@ -58,12 +59,7 @@ export default function OrderCreatePage() {
         user_name: clientName,
         user_phone: phone,
         booking_time: formattedBookingTime,
-        services: [
-          {
-            id: parseInt(selectedService),
-            price: servicePrice
-          }
-        ]
+        services: selectedServices
       });
 
       Swal.fire({
@@ -196,34 +192,32 @@ export default function OrderCreatePage() {
     setClientName("");
     setPhone("");
     setBookingTime("");
-    setSelectedService("");
-    setServicePrice(0);
+    setSelectedServices([]);
     setServices([]);
     setAvailableTimes([]);
   };
 
-  const handleServiceChange = (e) => {
-    const serviceId = e.target.value;
-    setSelectedService(serviceId);
-    if (serviceId) {
-      const service = services.find(s => s.id.toString() === serviceId.toString());
-      if (service) {
-        setServicePrice(service.price);
+  // Мультивыбор услуг (чекбоксы)
+  const handleServiceToggle = (service) => {
+    setSelectedServices((prev) => {
+      const exists = prev.some(s => s.id === service.id);
+      if (exists) {
+        return prev.filter(s => s.id !== service.id);
+      } else {
+        return [...prev, { id: service.id, price: service.price }];
       }
-    } else {
-      setServicePrice(0);
-    }
+    });
+    setErrors((err) => ({ ...err, service: "" }));
   };
 
-
   function formatPrice(input) {
-    const cleanedInput = input.includes('.') ? input.replace(/\.0+$/, '') : input;
-
+    const str = String(input ?? "");
+    const cleanedInput = str.includes('.') ? str.replace(/\.0+$/, '') : str;
     const digits = cleanedInput.replace(/\D/g, '');
-
     return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   }
 
+  const totalPrice = selectedServices.reduce((sum, s) => sum + Number(s.price), 0);
 
   return (
     <div className="pt-[80px] pb-8 px-4">
@@ -243,8 +237,7 @@ export default function OrderCreatePage() {
                 value={selectedBarber}
                 onChange={(e) => {
                   setSelectedBarber(e.target.value);
-                  setSelectedService("");
-                  setServicePrice(0);
+                  setSelectedServices([]);
                   setSelectedDate("");
                   setBookingTime("");
                   setErrors({ ...errors, barber: "" });
@@ -278,7 +271,7 @@ export default function OrderCreatePage() {
               {errors.date && <p className="mt-1 text-xs text-red-500">{errors.date}</p>}
             </div>
 
-            {/* Xizmat turi */}
+            {/* Xizmat turi (мультивыбор карточки) */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">Xizmat turi</label>
               {!selectedBarber ? (
@@ -290,26 +283,37 @@ export default function OrderCreatePage() {
                   Ushbu sartaroshda xizmatlar mavjud emas
                 </div>
               ) : (
-                <>
-                  <select
-                    value={selectedService}
-                    onChange={(e) => {
-                      handleServiceChange(e);
-                      setErrors({ ...errors, service: "" });
-                    }}
-                    className={`w-full p-2.5 text-sm border ${errors.service ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none`}
-                  >
-                    <option value="">Tanlang...</option>
-                    {services.map((service) => (
-                      <option key={service.id} value={service.id}>
-                        {service.name_uz} - {formatPrice(service.price)} so'm
-                      </option>
-                    ))}
-                  </select>
-                  {errors.service && <p className="mt-1 text-xs text-red-500">{errors.service}</p>}
-                </>
+                <div className="grid grid-cols-2 gap-2">
+                  {services.map((service) => {
+                    const checked = selectedServices.some(s => s.id === service.id);
+                    return (
+                      <label key={service.id} className={`flex items-center border rounded-lg p-2 cursor-pointer transition ${checked ? 'border-blue-600 bg-blue-50' : 'border-gray-300 bg-white'}`}>
+                        <input
+                          type="checkbox"
+                          className="mr-2"
+                          checked={checked}
+                          onChange={() => handleServiceToggle(service)}
+                        />
+                        <span>
+                          {service.name_uz} - {formatPrice(service.price)} so'm
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
               )}
+              {errors.service && <p className="mt-1 text-xs text-red-500">{errors.service}</p>}
             </div>
+
+            {/* Narx */}
+            {selectedServices.length > 0 && (
+              <div className="p-3 text-sm bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-700">Jami narx:</span>
+                  <span className="text-lg font-bold text-blue-600">{formatPrice(totalPrice)} so'm</span>
+                </div>
+              </div>
+            )}
 
             {/* Mavjud vaqtlar */}
             <div className="space-y-1">
@@ -347,16 +351,6 @@ export default function OrderCreatePage() {
                 </div>
               )}
             </div>
-
-            {/* Narx */}
-            {selectedService && (
-              <div className="p-3 text-sm bg-blue-50 rounded-lg border border-blue-200">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium text-gray-700">Jami narx:</span>
-                  <span className="text-lg font-bold text-blue-600">{formatPrice(servicePrice)} so'm</span>
-                </div>
-              </div>
-            )}
 
             {/* Mijoz ismi */}
             <div className="space-y-1">

@@ -10,7 +10,7 @@ export default function AdminHeader() {
     };
 
     return (
-        <div className="w-[78%] p-[10px] fixed rounded-[10px] bg-[white] shadow-lg">
+        <div className="w-[78%] p-[10px] fixed z-[800] rounded-[10px] bg-[white] shadow-lg">
             <div className="w-full flex items-center justify-between">
                 <div className="flex items-center gap-[10px]">
                 </div>
