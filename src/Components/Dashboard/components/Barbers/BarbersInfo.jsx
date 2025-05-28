@@ -91,8 +91,8 @@ export default function BarbersInfo() {
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
-            <NavLink 
-              to="/admin/barbers" 
+            <NavLink
+              to="/admin/barbers"
               className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-all duration-200"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,18 +131,17 @@ export default function BarbersInfo() {
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zM9 11a1 1 0 112 0 1 1 0 01-2 0z" clipRule="evenodd" />
                     </svg>
-                    {data.role}     
+                    {data.role}
                   </p>
                   <h2 className="text-xl text-gray-200"> {data.phone}</h2>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <NavLink
-                to="/berber/dashboard/servicetwo"
+                to={`/admin/barber/service/${ID}`}
                 className="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <Scissors size={32} className="text-blue-600 group-hover:text-blue-800" />
@@ -150,7 +149,7 @@ export default function BarbersInfo() {
               </NavLink>
 
               <NavLink
-                to="/barber/dashboard/workTimetwo"
+                to={`/admin/barber/work-time/${ID}`}
                 className="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <Calendar size={32} className="text-green-600 group-hover:text-green-800" />
@@ -158,7 +157,7 @@ export default function BarbersInfo() {
               </NavLink>
 
               <NavLink
-                to="/barber/dashboard/dayOfftwo"
+                to={`/admin/barber/day-off/${ID}`}
                 className="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <Calendar size={32} className="text-purple-600 group-hover:text-purple-800" />
@@ -166,18 +165,18 @@ export default function BarbersInfo() {
               </NavLink>
 
               <NavLink
-                to="/barber/dashboard/commenttwo"
-                className="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300"
+                to={`/admin/barber/comment/${ID}`}
+              className="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300"
               >
-                <Comment size={32} className="text-yellow-600 group-hover:text-yellow-800" />
-                <span className="mt-2 text-lg font-semibold text-yellow-600 group-hover:text-yellow-800">Commentlar</span>
-              </NavLink>
-            </div>
-
-         
+              <Comment size={32} className="text-yellow-600 group-hover:text-yellow-800" />
+              <span className="mt-2 text-lg font-semibold text-yellow-600 group-hover:text-yellow-800">Commentlar</span>
+            </NavLink>
           </div>
+
+
         </div>
       </div>
     </div>
+    </div >
   );
 }

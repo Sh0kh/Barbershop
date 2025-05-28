@@ -9,11 +9,11 @@ export const $api = axios.create({
     },
 });
 
-// Interceptor для автоматического обновления токена перед каждым запросом
+// Interceptor для автоматического добавления токена к запросам
 $api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
-        config.headers.Authorization = `Bearer  ${token}`;
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
 });

@@ -1,71 +1,130 @@
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Paper,
   Typography,
-  Container,
-  Box
 } from '@mui/material';
+import { $api } from '../../../../utils';
+import { useEffect, useState } from 'react';
+import ReactLoading from 'react-loading';
+
 
 export default function Archive() {
-  const mockOrders = [
-    { id: 1, customerName: "John Doe", phone: "+998901234567", price: 50000, date: "2023-05-15", service: "Haircut" },
-    { id: 2, customerName: "Alice Smith", phone: "+998902345678", price: 60000, date: "2023-05-16", service: "Beard Trim" },
-    { id: 3, customerName: "Bob Johnson", phone: "+998903456789", price: 45000, date: "2023-05-17", service: "Haircut" },
-    { id: 4, customerName: "Emma Wilson", phone: "+998904567890", price: 55000, date: "2023-05-18", service: "Hair Color" },
-    { id: 5, customerName: "Michael Brown", phone: "+998905678901", price: 70000, date: "2023-05-19", service: "Full Service" },
-    { id: 6, customerName: "Sarah Davis", phone: "+998906789012", price: 40000, date: "2023-05-20", service: "Haircut" },
-    { id: 7, customerName: "David Miller", phone: "+998907890123", price: 65000, date: "2023-05-21", service: "Beard Design" },
-    { id: 8, customerName: "Olivia Wilson", phone: "+998908901234", price: 50000, date: "2023-05-22", service: "Haircut" },
-    { id: 9, customerName: "James Taylor", phone: "+998909012345", price: 75000, date: "2023-05-23", service: "Premium Package" },
-    { id: 10, customerName: "Sophia Anderson", phone: "+998900123456", price: 60000, date: "2023-05-24", service: "Hair Treatment" }
-  ];
+  const [status, setStatus] = useState('archive');
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true)
+
+  const getOrders = async () => {
+    setLoading(true)
+    try {
+      const response = await $api.get(`${status}`);
+      setData(response?.data?.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false)
+    }
+  };
+
+  useEffect(() => {
+    getOrders();
+  }, []);
+
+
+
+  if (loading) {
+    return (
+      <div className="mx-auto  pb-24 min-h-screen p-4">
+        <div className="mb-6 p-4 bg-white h-[100%] rounded-lg shadow  ">
+          <div className="flex items-center justify-center h-screen ">
+            <ReactLoading type="spinningBubbles" color="black" height={80} width={80} />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="mx-auto max-w-[100%] pb-24 min-h-screen p-4">
-      
-      <Typography variant="h5" component="h1" gutterBottom sx={{ mt: 2, mb: 3, fontWeight: 'bold' }}>
-        Buyurtmalar Arxivi
+    <div className="mx-auto max-w-[100%] mt-[60px] pb-24 min-h-screen p-4">
+      <Typography
+        variant="h5"
+        component="h1"
+        gutterBottom
+        sx={{ mt: 2, mb: 3, fontWeight: 'bold' }}
+      >
+        Buyurtmalar Arxiv
       </Typography>
-      
+
       <TableContainer component={Paper} sx={{ mb: 4 }}>
-        <Table sx={{ minWidth: 550 }} aria-label="archive table">
-          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>#</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Mijoz Ismi</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Telefon</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Xizmat</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Narxi</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Sana</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mockOrders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.customerName}</TableCell>
-                <TableCell>{order.phone}</TableCell>
-                <TableCell>{order.service}</TableCell>
-                <TableCell>{order.price.toLocaleString()} so'm</TableCell>
-                <TableCell>{order.date}</TableCell>
+        {data?.length <= 0 ? (
+          <>
+            <div className="mx-auto min-h-screen mt-4">
+              <div className="mb-6 p-4 h-[100%] rounded-lg   ">
+                <div className="flex flex-col items-center justify-center h-screen text-center px-4">
+                  <div className="text-gray-400 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-medium text-gray-700 mb-2"> Ma'lumot topilmadi</h3>
+                  <p className="text-sm text-gray-500 max-w-xs">
+                    Hozircha hali ma'lumot yo‘q, iltimos, keyinroq urinib korishni so‘raymiz.
+                  </p>
+                </div>
+              </div>
+            </div >
+          </>
+        ) : (
+          <Table sx={{ minWidth: 550 }} aria-label="archive table">
+            <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold' }}>#</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Mijoz Ismi</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Telefon</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Xizmat</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Narxi</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Sana</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {data.map((order, index) => {
+                const user = order?.data;
+                const service = user?.services?.[0];
+                return (
+                  <TableRow key={order.id}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{user?.user_name || '-'}</TableCell>
+                    <TableCell>{user?.user_phone || '-'}</TableCell>
+                    <TableCell>{service?.name_uz || '-'}</TableCell>
+                    <TableCell>
+                      {service?.price
+                        ? `${Number(service.price).toLocaleString()} so'm`
+                        : '-'}
+                    </TableCell>
+                    <TableCell>
+                      {user?.booking_time
+                        ? new Date(user.booking_time).toLocaleString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
       </TableContainer>
-      
-      {mockOrders.length === 0 && (
-        <Box textAlign="center" py={4}>
-          <Typography variant="body1" color="textSecondary">
-            Hozircha arxivda buyurtmalar mavjud emas
-          </Typography>
-        </Box>
-      )}
     </div>
   );
 }

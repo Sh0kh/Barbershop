@@ -88,7 +88,7 @@ export default function BarbersCreate({ isOpen, onClose, refresh }) {
     try {
       const formData = new FormData();
 
-      formData.append("username", name);
+      formData.append("username", `${name}_${lastname}`);
       formData.append("name", name);
       formData.append("lastname", lastname);
       formData.append("phone", phone);

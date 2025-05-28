@@ -30,11 +30,15 @@ import OrderEdit from "./Components/Dashboard/components/Orders/OrderEdit";
 import Benifit from "./Components/Dashboard/components/Benifit/Benifit";
 import Archive from "./Components/Dashboard/components/Archive/Archive";
 import BarbersInfo from "./Components/Dashboard/components/Barbers/BarbersInfo";
-import Cost from "./Components/Dashboard/components/Cost/Cost";
 import TwoService from "./Components/Dashboard/components/Service/TwoService";
 import BarberWorkTimeTwo from "./Components/BarberWorkTime/BarberWorkTimeTwo";
 import BarberDayOffTwo from "./Components/BarberDayOff/BarberDayOffTwo";
 import BarberDashboardComTwo from "./Components/Dashboard/BarberDashboardComTwo";
+import AdminBarberService from "./Components/AdminBarberService/AdminBarberService";
+import AdminBarberWorkTime from "./Components/AdminBarberWorkTime/AdminBarberWorkTime";
+import AdminBarberDayOff from "./Components/AdminBarberDayOff/AdminBarberDayOff";
+import AdminBarberComment from "./Components/AdminBarberComment/AdminBarberComment";
+import Expenses from "./Components/Expenses/Expenses";
 
 function App() {
   return (
@@ -62,7 +66,14 @@ function App() {
 
             <Route path="admin/benefit" element={<Benifit/>} />
             <Route path="admin/archive" element={<Archive/>} />
-            <Route path="admin/cost" element={<Cost/>} />
+            <Route path="admin/expenses" element={<Expenses/>} />
+
+            <Route path="admin/barber/service/:ID" element={<AdminBarberService/>} />
+            <Route path="admin/barber/work-time/:ID" element={<AdminBarberWorkTime/>} />
+            <Route path="admin/barber/day-off/:ID" element={<AdminBarberDayOff/>} />
+            <Route path="admin/barber/comment/:ID" element={<AdminBarberComment/>} />
+
+
 
 
 
